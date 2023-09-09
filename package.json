@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "npx tsc; node dist/index.js"
+    "dev": "npx tsc; node dist/index.js",
+    "start": "npx tsc; node dist/index.js",
+    "deploy": "glcoud app deploy",
+    "preview": "glcoud app browse"
   },
   "keywords": [],
   "author": "",

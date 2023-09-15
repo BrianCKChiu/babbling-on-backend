@@ -33,12 +33,11 @@ export class QuizGenerator {
       topic: topic,
       questions: questions,
     };
-
     console.log(quizData);
 
     try {
-      await setDoc(doc(db, "quizzes", quizId), quizData);
-      return { id: quizId, ...quizData };
+      const ref = await db.collection("quizzes").add(quizData);
+      return { id: ref.id, ...quizData };
     } catch (e) {
       console.log(e);
     }

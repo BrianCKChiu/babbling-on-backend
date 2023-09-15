@@ -1,4 +1,4 @@
-import { Question } from "./question";
+import { Question, QuestionResult } from "./question";
 
 export type QuizOptions = {
   length?: number;
@@ -16,8 +16,9 @@ export enum QuizStatus {
 export type Quiz = {
   id: string;
   dateCreated: number;
-  quizStatus: QuizStatus;
+  status: QuizStatus;
   userId: string;
   topic: string;
   questions: Array<Question>;
+  quizResults: Array<QuestionResult>;
 };

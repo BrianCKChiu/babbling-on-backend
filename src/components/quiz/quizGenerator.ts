@@ -10,7 +10,6 @@ export class QuizGenerator {
     topic?: string,
     options: QuizOptions = { length: 5 }
   ): Promise<Quiz> {
-    const quizId = generateUuid62();
     const questions = [];
     if (topic == null) {
       // query for random topic
@@ -28,12 +27,12 @@ export class QuizGenerator {
 
     const quizData = {
       dateCreated: Date.now(),
-      quizStatus: QuizStatus.INCOMPLETE,
+      status: QuizStatus.INCOMPLETE,
       userId: "333333",
       topic: topic,
       questions: questions,
+      quizResults: [],
     };
-    console.log(quizData);
 
     try {
       const ref = await db.collection("quizzes").add(quizData);

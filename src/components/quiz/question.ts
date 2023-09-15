@@ -7,11 +7,22 @@ export type Question = {
 
 export interface QuestionMcq extends Question {
   type: "mcq";
-  gesture: { gestureId: string; mediaRef: string };
+  gesture: GestureRef;
   choices: Array<string>;
 }
 
 export interface QuestionMatching extends Question {
   type: "matching";
-  gestures: { gestureId: string; mediaRef: string }[];
+  gestures: GestureRef[];
 }
+
+export type QuestionResult = {
+  questionId: string;
+  answer: string;
+  correct: boolean;
+};
+
+export type GestureRef = {
+  gestureId: string;
+  mediaRef: string;
+};

@@ -1,11 +1,38 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model Gesture {
+  id           String         @id @default(uuid())
+  phrase       String
+  verified     Boolean        @default(false)
+  topicId      String
+  topic        Topic          @relation(fields: [topicId], references: [id])
+  gestureMedia GestureMedia[]
+
+  @@index([topicId])
+}
+
+model GestureMedia {
+  id        String   @id @default(uuid())
+  gestureId String
+  mediaType String
+  mediaId   String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  gesture   Gesture  @relation(fields: [gestureId], references: [id])
+
+  @@index([gestureId])
+}
+
+model Topic {
+  id       String    @id @default(uuid())
+  name     String
+  gestures Gesture[]
 }

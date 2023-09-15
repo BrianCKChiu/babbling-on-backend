@@ -24,7 +24,11 @@ DATABASE_URL=...
 
 ## Prisma
 
-Creating tables in prisma is done by creating a new model in the `schema.prisma` file. Then running `npx prisma migrate dev --name <name of migration>` to create a new migration. Then running `npx prisma migrate deploy` to deploy the migration to the database. `npx prisma db push` can be used to push the schema to the database without creating a migration. To pull changes from the database to the schema run `npx prisma db pull`.
+Creating tables in prisma is done by creating a new model in the `schema.prisma` file.
+
+- `npx prisma db pull` will pull the database schema into the prisma schema file
+- `npx prisma db push` will push the prisma schema file to the database
+- `npx prisma generate` will generate the prisma client
 
 Documentation for prisma can be found [here](https://www.prisma.io/docs/concepts/components/prisma-schema).
 

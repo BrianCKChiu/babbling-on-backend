@@ -18,11 +18,11 @@ quizRouter.post("/create", async (req, res) => {
       return res.status(400).send("Bad request");
     }
     // authenticate user
-    // const user = await authenticateToken(token);
-    // if (user == null) {
-    //   return res.status(401).send("Unauthorized");
-    // }
-    const quizData = await QuizGenerator.create(token, topic);
+    const user = await authenticateToken(token);
+    if (user == null) {
+      return res.status(401).send("Unauthorized");
+    }
+    const quizData = await QuizGenerator.create(user.uid, topic);
 
     console.log(quizData);
     return res.status(200).json(quizData);

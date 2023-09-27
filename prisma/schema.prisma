@@ -24,7 +24,7 @@ model GestureMedia {
   gestureId String
   mediaType String
   mediaRef  String   @unique
-  createdAt DateTime @default(now())
+  createdAt DateTime @default(now()) 
   updatedAt DateTime @updatedAt
   gesture   Gesture  @relation(fields: [gestureId], references: [id])
 

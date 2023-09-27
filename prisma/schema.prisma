@@ -14,9 +14,12 @@ model Gesture {
   verified     Boolean        @default(false)
   topicId      String
   topic        Topic          @relation(fields: [topicId], references: [id])
+  lessonId     String
+  lesson       Lesson         @relation(fields: [lessonId], references: [id])
   gestureMedia GestureMedia[]
 
   @@index([topicId])
+  @@index([lessonId])
 }
 
 model GestureMedia {
@@ -35,4 +38,23 @@ model Topic {
   id       String    @id @default(uuid())
   name     String
   gestures Gesture[]
+}
+
+model Course {
+  id              String  @id @default(uuid())
+  name            String 
+  description     String
+  lessons         Lesson[]
+}
+
+model Lesson {
+  id            String    @id @default(uuid())
+  description   String
+  name          String 
+
+  gestures      Gesture[]
+  courseId      String
+  course        Course    @relation(fields: [courseId], references: [id])
+
+  @@index([courseId])
 }

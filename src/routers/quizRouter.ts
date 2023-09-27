@@ -2,6 +2,7 @@ import { QuizGenerator } from "../components/quiz/quizGenerator";
 import { Quiz, QuizOptions, QuizStatus } from "../components/quiz/quiz";
 import express from "express";
 import { db } from "../database/firebase";
+import { authenticateToken } from "../utils/authenticateToken";
 
 const quizRouter = express.Router();
 
@@ -9,40 +10,46 @@ quizRouter.post("/create", async (req, res) => {
   try {
     console.log(req.body);
     const {
-      userId,
+      token,
       topic,
       options,
-    }: { userId: string; topic: string; options: QuizOptions } = req.body;
-    if (userId == null) {
-      res.status(400).send("Bad request");
+    }: { token: string; topic: string; options: QuizOptions } = req.body;
+    if (token == null) {
+      return res.status(400).send("Bad request");
     }
     // authenticate user
-
-    const quizData = await QuizGenerator.create(userId, topic);
+    const user = await authenticateToken(token);
+    if (user == null) {
+      return res.status(401).send("Unauthorized");
+    }
+    const quizData = await QuizGenerator.create(user.uid, topic);
 
     console.log(quizData);
-    res.status(200).json(quizData);
+    return res.status(200).json(quizData);
   } catch (error) {
-    res.status(500).send(`Internal server error: ${error}`);
+    return res.status(500).send(`Internal server error: ${error}`);
   }
 });
 
 quizRouter.post("/submitAnswer", async (req, res) => {
   try {
-    const { userId, quizId, answer } = req.body;
-    if (userId == null || quizId == null || answer == null) {
+    const { token, quizId, answer } = req.body;
+    if (token == null || quizId == null || answer == null) {
       res.status(400).send("Bad request");
     }
     // authenticate user
-
+    const user = await authenticateToken(token);
+    if (user == null) {
+      res.status(401).send("Unauthorized");
+    }
     // verify quizId belongs to userId
     const quizDoc = await db.collection("quizzes").doc(quizId).get();
     const quizData = quizDoc.data();
     if (quizData == null) {
       res.status(401).send(`Quiz not found: ${quizId}`);
     }
-    if (quizData.userId != userId) {
-      res.status(401).send(`Quiz does not belong to user: ${userId}`);
+    if (quizData.userId != token) {
+      res.status(401).send(`Quiz does not belong to user: ${user.uid}`);
     }
     const results = [...quizData.quizResults, answer];
 

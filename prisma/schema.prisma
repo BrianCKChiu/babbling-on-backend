@@ -9,23 +9,27 @@ datasource db {
 }
 
 model Gesture {
-  id           String         @id @default(uuid())
-  phrase       String
-  verified     Boolean        @default(false)
-  topicId      String
-  topic        Topic          @relation(fields: [topicId], references: [id])
-  gestureMedia GestureMedia[]
+  id              String            @id @default(uuid())
+  phrase          String
+  verified        Boolean           @default(false)
+  topicId         String
+  lessonId        String
+  topic           Topic             @relation(fields: [topicId], references: [id])
+  gestureMedia    GestureMedia[]
+  Feedback        Feedback[]
+  PracticeSession PracticeSession[]
 
   @@index([topicId])
+  @@index([lessonId])
 }
 
 model GestureMedia {
   id        String   @id @default(uuid())
   gestureId String
   mediaType String
-  mediaRef  String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  mediaRef  String   @unique
   gesture   Gesture  @relation(fields: [gestureId], references: [id])
 
   @@index([gestureId])
@@ -35,4 +39,62 @@ model Topic {
   id       String    @id @default(uuid())
   name     String
   gestures Gesture[]
+}
+
+model Course {
+  id          String @id
+  name        String
+  description String
+}
+
+model Lesson {
+  id          String @id
+  description String
+  name        String
+}
+
+model LessonToCourse {
+  id       String @id
+  courseId String
+  lessonId String
+}
+
+model User {
+  userId             Int                  @id @default(autoincrement())
+  selfAssessments    SelfAssessment[]
+  performanceHistory PerformanceHistory[]
+}
+
+model SelfAssessment {
+  score              Int
+  dateTaken          DateTime
+  assessmentId       Int                  @id @default(autoincrement())
+  userId             Int
+  feedback           Feedback[]
+  user               User                 @relation(fields: [userId], references: [userId])
+  PerformanceHistory PerformanceHistory[]
+}
+
+model Feedback {
+  correctness     Boolean
+  improvementTips String?
+  assessmentId    Int
+  feedbackId      Int            @id @default(autoincrement())
+  gestureId       String
+  selfAssessment  SelfAssessment @relation(fields: [assessmentId], references: [assessmentId])
+  gesture         Gesture        @relation(fields: [gestureId], references: [id])
+}
+
+model PracticeSession {
+  gestureId         String
+  practiceSessionId Int     @id @default(autoincrement())
+  gesture           Gesture @relation(fields: [gestureId], references: [id])
+}
+
+model PerformanceHistory {
+  assessmentId   Int
+  historyId      Int            @id @default(autoincrement())
+  userId         Int
+  user           User           @relation(fields: [userId], references: [userId])
+  selfAssessment SelfAssessment @relation(fields: [assessmentId], references: [assessmentId])
 }

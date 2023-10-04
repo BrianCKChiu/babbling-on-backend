@@ -10,13 +10,8 @@ import requests
 import numpy as np
 from io import BytesIO
 from torchvision.transforms import (
-    CenterCrop,
     Compose,
     Normalize,
-    RandomRotation,
-    RandomResizedCrop,
-    RandomHorizontalFlip,
-    RandomAdjustSharpness,
     Resize,
     ToTensor,
 )
@@ -94,6 +89,11 @@ def predict():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+
+
+@app.route("/")
+def is_alive():
+    return "alive"
 
 
 if __name__ == "__main__":

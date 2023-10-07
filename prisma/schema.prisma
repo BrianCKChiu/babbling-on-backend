@@ -9,15 +9,13 @@ datasource db {
 }
 
 model Gesture {
-  id              String            @id @default(uuid())
-  phrase          String
-  verified        Boolean           @default(false)
-  topicId         String
-  lessonId        String
-  topic           Topic             @relation(fields: [topicId], references: [id])
-  gestureMedia    GestureMedia[]
-  Feedback        Feedback[]
-  PracticeSession PracticeSession[]
+  id           String         @id @default(uuid())
+  phrase       String
+  verified     Boolean        @default(false)
+  topicId      String
+  lessonId     String
+  topic        Topic          @relation(fields: [topicId], references: [id])
+  gestureMedia GestureMedia[]
 
   @@index([topicId])
   @@index([lessonId])
@@ -60,41 +58,15 @@ model LessonToCourse {
 }
 
 model User {
-  userId             Int                  @id @default(autoincrement())
-  selfAssessments    SelfAssessment[]
-  performanceHistory PerformanceHistory[]
+  userId          String           @id @default(uuid())
+  selfAssessments SelfAssessment[]
 }
 
 model SelfAssessment {
-  score              Int
-  dateTaken          DateTime
-  assessmentId       Int                  @id @default(autoincrement())
-  userId             Int
-  feedback           Feedback[]
-  user               User                 @relation(fields: [userId], references: [userId])
-  PerformanceHistory PerformanceHistory[]
-}
-
-model Feedback {
-  correctness     Boolean
-  improvementTips String?
-  assessmentId    Int
-  feedbackId      Int            @id @default(autoincrement())
-  gestureId       String
-  selfAssessment  SelfAssessment @relation(fields: [assessmentId], references: [assessmentId])
-  gesture         Gesture        @relation(fields: [gestureId], references: [id])
-}
-
-model PracticeSession {
-  gestureId         String
-  practiceSessionId Int     @id @default(autoincrement())
-  gesture           Gesture @relation(fields: [gestureId], references: [id])
-}
-
-model PerformanceHistory {
-  assessmentId   Int
-  historyId      Int            @id @default(autoincrement())
-  userId         Int
-  user           User           @relation(fields: [userId], references: [userId])
-  selfAssessment SelfAssessment @relation(fields: [assessmentId], references: [assessmentId])
+  score        Int
+  dateTaken    DateTime
+  assessmentId Int      @id @default(autoincrement())
+  userId       String
+  isPractice   Boolean
+  user         User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
 }

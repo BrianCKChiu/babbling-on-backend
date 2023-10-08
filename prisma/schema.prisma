@@ -56,17 +56,3 @@ model LessonToCourse {
   courseId String
   lessonId String
 }
-
-model User {
-  userId          String           @id @default(uuid())
-  selfAssessments SelfAssessment[]
-}
-
-model SelfAssessment {
-  score        Int
-  dateTaken    DateTime
-  assessmentId Int      @id @default(autoincrement())
-  userId       String
-  isPractice   Boolean
-  user         User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
-}

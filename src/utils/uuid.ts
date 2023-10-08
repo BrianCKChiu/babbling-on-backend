@@ -13,3 +13,4 @@ function encodeToBase62(uuid: string): string {
   );
   return BASE62.encode(buf);
 }
+

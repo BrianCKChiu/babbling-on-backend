@@ -2,6 +2,7 @@ import { QuizGenerator } from "../components/quiz/quizGenerator";
 import { Quiz, QuizOptions, QuizStatus } from "../components/quiz/quiz";
 import express from "express";
 import { db } from "../database/firebase";
+import { authenticateToken } from "../utils/authenticateToken";
 
 const quizRouter = express.Router();
 
@@ -9,58 +10,62 @@ quizRouter.post("/create", async (req, res) => {
   try {
     console.log(req.body);
     const {
-      userId,
+      token,
       topic,
       options,
-    }: { userId: string; topic: string; options: QuizOptions } = req.body;
-    if (userId == null) {
-      res.status(400).send("Bad request");
+    }: { token: string; topic: string; options: QuizOptions } = req.body;
+    if (token == null) {
+      return res.status(400).send("Bad request");
     }
     // authenticate user
-
-    const quizData = await QuizGenerator.create(userId, topic);
+    const user = await authenticateToken(token);
+    if (user == null) {
+      return res.status(401).send("Unauthorized");
+    }
+    const quizData = await QuizGenerator.create(user.uid, topic);
 
     console.log(quizData);
-    res.status(200).json(quizData);
+    return res.status(200).json(quizData);
   } catch (error) {
-    res.status(500).send(`Internal server error: ${error}`);
+    return res.status(500).send(`Internal server error: ${error}`);
   }
 });
 
 quizRouter.post("/submitAnswer", async (req, res) => {
   try {
-    const { userId, quizId, answer } = req.body;
-    if (userId == null || quizId == null || answer == null) {
-      res.status(400).send("Bad request");
+    const { token, quizId, results } = req.body;
+    console.log(req.body);
+    if (token == null || quizId == null || results == null) {
+      return res.status(400).send("Bad request");
     }
     // authenticate user
-
+    const user = await authenticateToken(token);
+    if (user == null) {
+      return res.status(401).send("Unauthorized");
+    }
+    console.log(quizId);
     // verify quizId belongs to userId
     const quizDoc = await db.collection("quizzes").doc(quizId).get();
+
     const quizData = quizDoc.data();
+    console.log(quizData);
     if (quizData == null) {
-      res.status(401).send(`Quiz not found: ${quizId}`);
+      return res.status(401).send(`Quiz not found: ${quizId}`);
     }
-    if (quizData.userId != userId) {
-      res.status(401).send(`Quiz does not belong to user: ${userId}`);
+    if (quizData.userId != user.uid) {
+      return res.status(401).send(`Quiz does not belong to user: ${user.uid}`);
     }
-    const results = [...quizData.quizResults, answer];
 
     // update quiz results & status
-    if (results.length === quizData.questions.length) {
-      await quizDoc.ref.update({
-        quizResults: results,
-        status: QuizStatus.COMPLETED,
-      });
-    } else {
-      await quizDoc.ref.update({
-        quizResults: results,
-      });
-    }
+    await quizDoc.ref.update({
+      quizResults: results,
+      status: QuizStatus.COMPLETED,
+      timeCompleted: Date.now(),
+    });
 
-    res.status(200);
+    return res.status(200);
   } catch (error) {
-    res.status(500).send(`Internal server error: ${error}`);
+    return res.status(500).send(`Internal server error: ${error}`);
   }
 });
 

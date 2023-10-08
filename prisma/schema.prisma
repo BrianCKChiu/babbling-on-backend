@@ -15,6 +15,8 @@ model Gesture {
   topicId      String
   lessonId     String
   topic        Topic          @relation(fields: [topicId], references: [id])
+  lessonId     String
+  lesson       Lesson         @relation(fields: [lessonId], references: [id])
   gestureMedia GestureMedia[]
 
   @@index([topicId])
@@ -25,7 +27,8 @@ model GestureMedia {
   id        String   @id @default(uuid())
   gestureId String
   mediaType String
-  createdAt DateTime @default(now())
+  mediaRef  String   @unique
+  createdAt DateTime @default(now()) 
   updatedAt DateTime @updatedAt
   mediaRef  String   @unique
   gesture   Gesture  @relation(fields: [gestureId], references: [id])
@@ -40,34 +43,20 @@ model Topic {
 }
 
 model Course {
-  id          String @id
-  name        String
-  description String
+  id              String  @id @default(uuid())
+  name            String 
+  description     String
+  lessons         Lesson[]
 }
 
 model Lesson {
-  id          String @id
-  description String
-  name        String
-}
+  id            String    @id @default(uuid())
+  description   String
+  name          String 
 
-model LessonToCourse {
-  id       String @id
-  courseId String
-  lessonId String
-}
+  gestures      Gesture[]
+  courseId      String
+  course        Course    @relation(fields: [courseId], references: [id])
 
-model User {
-  userId          String           @id @default(uuid())
-  email           String
-  selfAssessments SelfAssessment[]
-}
-
-model SelfAssessment {
-  score        Int
-  dateTaken    DateTime
-  assessmentId Int      @id @default(autoincrement())
-  userId       String
-  isPractice   Boolean
-  user         User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  @@index([courseId])
 }

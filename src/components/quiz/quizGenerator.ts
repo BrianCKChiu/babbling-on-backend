@@ -8,10 +8,10 @@ import { prisma } from "../../database/prisma";
 
 const gestureArr: Gesture[] = [
   { phrase: "a", topicId: "1", id: "1", lessonId: "1", verified: true },
-  { phrase: "b", topicId: "1", id: "2", lessonId: "2", verified: true },
-  { phrase: "c", topicId: "1", id: "3", lessonId: "3", verified: true },
-  { phrase: "d", topicId: "1", id: "4", lessonId: "4", verified: true },
-  { phrase: "e", topicId: "1", id: "5", lessonId: "5", verified: true },
+  { phrase: "b", topicId: "1", id: "2", lessonId: "1", verified: true },
+  { phrase: "c", topicId: "1", id: "3", lessonId: "1", verified: true },
+  { phrase: "d", topicId: "1", id: "4", lessonId: "1", verified: true },
+  { phrase: "e", topicId: "1", id: "5", lessonId: "1", verified: true },
 ];
 
 export class QuizGenerator {

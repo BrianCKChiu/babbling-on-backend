@@ -13,8 +13,8 @@ model Gesture {
   phrase       String
   verified     Boolean        @default(false)
   topicId      String
-  topic        Topic          @relation(fields: [topicId], references: [id])
   lessonId     String
+  topic        Topic          @relation(fields: [topicId], references: [id])
   lesson       Lesson         @relation(fields: [lessonId], references: [id])
   gestureMedia GestureMedia[]
 
@@ -26,9 +26,9 @@ model GestureMedia {
   id        String   @id @default(uuid())
   gestureId String
   mediaType String
-  mediaRef  String   @unique
-  createdAt DateTime @default(now()) 
+  createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  mediaRef  String   @unique
   gesture   Gesture  @relation(fields: [gestureId], references: [id])
 
   @@index([gestureId])

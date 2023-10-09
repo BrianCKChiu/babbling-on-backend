@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 if (process.env.FIREBASE_SERVICE_ACCOUNT == null) {
-  throw new Error("FIREBASE_SERVICE_ACCOUNT is not set");
+   throw new Error("FIREBASE_SERVICE_ACCOUNT is not set");
 }
 
 // Initialize Firebase

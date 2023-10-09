@@ -38,23 +38,30 @@ model Topic {
   id       String    @id @default(uuid())
   name     String
   gestures Gesture[]
+
+
 }
 
 model Course {
-  id              String  @id @default(uuid())
-  name            String 
-  description     String
-  lessons         Lesson[]
+  id           String        @id @default(uuid())
+  name         String
+  description  String
+  lessons      LessonToCourse[]
 }
 
 model Lesson {
-  id            String    @id @default(uuid())
-  description   String
-  name          String 
-
-  gestures      Gesture[]
-  courseId      String
-  course        Course    @relation(fields: [courseId], references: [id])
-
-  @@index([courseId])
+  id           String        @id @default(uuid())
+  description  String
+  name         String
+  gestures     Gesture[]
+  courses      LessonToCourse[]
 }
+
+model LessonToCourse {
+  id        String   @id @default(uuid())
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id])
+  lessonId  String
+  lesson    Lesson   @relation(fields: [lessonId], references: [id])
+}
+

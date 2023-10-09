@@ -9,15 +9,15 @@ lessonRouter.post("/post", async (req, res) => {
     try {
       console.log("enters post method in lesson router")
        const { courseId,name,description } = req.body;
-    
+      console.log(name, description);
+
       const result = await prisma.lesson.create({
         data: {
+          courseId,
           name,
           description
         },
-        include: {
-          courses:true,
-          gestures:true
+        include: { // no need for includes 
         },
       });
   
@@ -33,10 +33,7 @@ lessonRouter.post("/post", async (req, res) => {
 lessonRouter.get("/get", async (req, res) => {
     try {
       const lessons = await prisma.lesson.findMany({
-        include: {
-        
-        courses:true,
-          gestures:true 
+        include: { 
         },
       });
   
@@ -76,31 +73,36 @@ lessonRouter.patch('/update/:id',async(req,res)=>{
 })
 
 // delete lesson - DEBUGGING
-// lessonRouter.delete('delete/:id', async(req, res) => {
-//     try {
-//       console.log('Delete route handler invoked');
-//       const lessonId = req.params.id;
+lessonRouter.delete('/delete/', async(req, res) => {
+    try {
+      console.log('Delete route handler invoked');
+      
+      const {lessonId} = req.body;
 
-//       // check if the lesson with the specified id exists before trying to delete it
-//       const existingLesson = await prisma.lesson.findUnique({
-//         where: { id: lessonId },
-//       });
+      if (lessonId == null){
+        return res.status(400).json({error: "Lesson id is required"});
+      }
 
-//       if (!existingLesson){
-//         return res.status(404).json({ error: 'Lesson not found' });
-//       }
+      // check if the lesson with the specified id exists before trying to delete it
+      const existingLesson = await prisma.lesson.findUnique({
+        where: { id: lessonId },
+      });
 
-//       // if found delete the lesson
-//       await prisma.lesson.delete({
-//         where: { id: lessonId },
-//       });
+      if (!existingLesson){
+        return res.status(404).json({ error: 'Lesson not found' });
+      }
 
-//       res.json({ message: 'Lesson deleted succesfully' });
-//     }catch(error){
-//       console.error('Error deleting lesson', error);
-//       res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// });
+      // if found delete the lesson
+      await prisma.lesson.delete({
+        where: { id: lessonId },
+      });
+
+      res.json({ message: 'Lesson deleted succesfully' });
+    }catch(error){
+      console.error('Error deleting lesson', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 // search for a course or lesson
 

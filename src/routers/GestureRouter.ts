@@ -1,134 +1,137 @@
-// import express from 'express'
-// import { prisma } from '../database/prisma';
+import express from 'express'
+import { prisma } from '../database/prisma';
 
 
-// const gestureRouter =  express.Router()
+const gestureRouter =  express.Router()
 
-// // create a sign
-// gestureRouter.post("/post", async (req, res) => {
-//     try {
-//        const { lessonId,verified,phrase,topicId,topic } = req.body;
-    
-//       const result = await prisma.gesture.create({
-//         data: {
-//           phrase,
-//           verified,
-//           topicId,
-//           topic
-//         },
-//         include: {
-//           lessons:true,
-//         },
-//       });
-  
-//       res.status(201).json(result);
-//     } catch (error) {
-//       console.error("Error creating lesson:", error);
-//       res.status(500).json({ error: "Internal Server Error" });
-//     }
-//   });
-
-
-// //get signs
-// gestureRouter.get("/get", async (req, res) => {
-//     try {
-//       const lessons = await prisma.lesson.findMany({
-//         include: {
+// create a gesture
+gestureRouter.post("/post", async (req, res) => {
+    try {
         
-//         courses:true,
-//           gestures:true 
-//         },
-//       });
+        console.log("enters post method in gesture router");
+
+       const { gestureId,lessonId,phrase,verified,topicId } = req.body;
+    
+      const result = await prisma.gesture.create({
+        data: {
+          lessonId,
+          phrase,
+          verified,
+          topicId,
+        },
+        include: {
+        },
+      });
   
-//       if (!lessons) {
-//         res.status(404).json({ error: "lessons not found" });
-//       } else {
-//         res.json(lessons);
-//       }
-//     } catch (error) {
-//       console.error("Error fetching lessons:", error);
-//       res.status(500).json({ error: "Internal Server Error" });
-//     }
-//   });
+      res.status(201).json(result);
+    } catch (error) {
+      console.error("Error creating gesture:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
 
 
-// // update sign 
-// gestureRouter.patch('/update/:id',async(req,res)=>{
-//   try {
-//       const { name, description } = req.body;
+//get signs
+gestureRouter.get("/get", async (req, res) => {
+    try {
+      const gestures = await prisma.lesson.findMany({
+        include: {
+        },
+      });
   
-//       const updatedLesson = await prisma.lesson.update({
-//         where: { id: req.params.id},
-//         data: {
-//           name,
-//           description,
-//         },
-//         include: {
-//           gestures: true,
-//         },
-//       });
+      if (!gestures) {
+        res.status(404).json({ error: "gestures not found" });
+      } else {
+        res.json(gestures);
+      }
+    } catch (error) {
+      console.error("Error fetching gesture:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+
+
+// update sign 
+gestureRouter.patch('/update/:id',async(req,res)=>{
+  try {
+      const { name, description } = req.body;
   
-//       res.json(updatedLesson);
-//     } catch (error) {
-//       console.error("Error updating course:", error);
-//       res.status(500).json({ error: "Internal Server Error" });
-//     }
-// })
+      const updatedGesture = await prisma.lesson.update({
+        where: { id: req.params.id},
+        data: {
+          name,
+          description,
+        },
+        include: {
+        },
+      });
+  
+      res.json(updatedGesture);
+    } catch (error) {
+      console.error("Error updating gesture:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+})
 
-// // delete lesson - DEBUGGING
-// // lessonRouter.delete('delete/:id', async(req, res) => {
-// //     try {
-// //       console.log('Delete route handler invoked');
-// //       const lessonId = req.params.id;
+// delete gesture
+gestureRouter.delete('/delete/', async(req, res) => {
+    try {
+      console.log('Delete route handler invoked');
+      
+      const {gestureId} = req.body;
 
-// //       // check if the lesson with the specified id exists before trying to delete it
-// //       const existingLesson = await prisma.lesson.findUnique({
-// //         where: { id: lessonId },
-// //       });
+      if (gestureId == null){
+        return res.status(400).json({error: "Gesture id is required"});
+      }
 
-// //       if (!existingLesson){
-// //         return res.status(404).json({ error: 'Lesson not found' });
-// //       }
+      // check if the lesson with the specified id exists before trying to delete it
+      const existingGesture = await prisma.gesture.findUnique({
+        where: { id: gestureId },
+      });
 
-// //       // if found delete the lesson
-// //       await prisma.lesson.delete({
-// //         where: { id: lessonId },
-// //       });
+      if (!existingGesture){
+        return res.status(404).json({ error: 'Gesture not found' });
+      }
 
-// //       res.json({ message: 'Lesson deleted succesfully' });
-// //     }catch(error){
-// //       console.error('Error deleting lesson', error);
-// //       res.status(500).json({ error: 'Internal Server Error' });
-// //     }
-// // });
+      // if found delete the lesson
+      await prisma.gesture.delete({
+        where: { id: gestureId },
+      });
 
-// // search for a course or lesson
-
-// signRouter.get('/search', async (req, res) => {
-//   try {
-//     // Get search criteria from query parameters
-//     const { keyword } = req.query;
-
-//     if (!keyword) {
-//       return res.status(400).json({ error: 'Missing search keyword' });
-//     }
-
-//     // Perform a case-insensitive search for lessons based on the keyword
-//     const lessons = await prisma.lesson.findMany({
-//       where: {
-//         OR: [
-//           { name: { contains: String(keyword)} },
-//           { description: { contains: String(keyword)} },
-//         ],
-//       },
-//     });
-
-//     res.json(lessons); // returns the lesson entity in json format in the terminal
-//   } catch (error) {
-//     console.error('Error searching for lessons:', error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
+      res.json({ message: 'Gesture deleted succesfully' });
+    }catch(error){
+      console.error('Error deleting gesture', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 
-// export default gestureRouter
+// search for a gesture
+gestureRouter.get('/search', async (req, res) => {
+  try {
+    // Get search criteria from query parameters
+    const { keyword } = req.query;
+
+    if (!keyword) {
+      return res.status(400).json({ error: 'Missing search keyword' });
+    }
+
+    // Perform a case-insensitive search for lessons based on the keyword
+    const lessons = await prisma.lesson.findMany({
+      where: {
+        OR: [
+          { name: { contains: String(keyword)} },
+          { description: { contains: String(keyword)} },
+        ],
+      },
+    });
+
+    res.json(lessons); // returns the lesson entity in json format in the terminal
+  } catch (error) {
+    console.error('Error searching for gestures:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+export default gestureRouter

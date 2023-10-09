@@ -67,7 +67,7 @@ lessonRouter.patch('/update/:id',async(req,res)=>{
   
       res.json(updatedLesson);
     } catch (error) {
-      console.error("Error updating course:", error);
+      console.error("Error updating lesson:", error);
       res.status(500).json({ error: "Internal Server Error" });
     }
 })

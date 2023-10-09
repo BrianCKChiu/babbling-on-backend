@@ -82,4 +82,36 @@ customCoursesRouter.patch('/update/:id',async(req,res)=>{
       }
 })
 
+// delete a course
+customCoursesRouter.delete('/delete/', async(req, res) => {
+  try {
+    console.log('Delete route handler invoked');
+    
+    const {customCourseId} = req.body;
+
+    if (customCourseId == null){
+      return res.status(400).json({error: "Course id is required"});
+    }
+
+    // check if the lesson with the specified id exists before trying to delete it
+    const existingCourse = await prisma.course.findUnique({
+      where: { id: customCourseId },
+    });
+
+    if (!existingCourse){
+      return res.status(404).json({ error: 'Course not found' });
+    }
+
+    // if found delete the lesson
+    await prisma.course.delete({
+      where: { id: customCourseId },
+    });
+
+    res.json({ message: 'Course deleted succesfully' });
+  }catch(error){
+    console.error('Error deleting course', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 export default customCoursesRouter;

@@ -3,7 +3,7 @@ import quizRouter from "./routers/quizRouter";
 import customCoursesRouter from "./routers/customCoursesRouter";
 import bodyParser from "body-parser";
 import lessonRouter from "./routers/LessonRouter";
-import courseTolessonRouter from "./routers/CourseToLessonRouter";
+import gestureRouter from "./routers/GestureRouter";
 
 const app = express();
 const port = 8080;
@@ -12,11 +12,12 @@ app.use(bodyParser.json());
 
 app.use("/quiz", quizRouter);
 
-app.use("/customCourse", customCoursesRouter);
+app.use("/customCourses", customCoursesRouter);
 
 app.use('/lesson',lessonRouter)
 
-app.use('/courseTolesson',courseTolessonRouter)
+app.use('/gesture', gestureRouter)
+
 
 app.listen(port, () => {
   return console.log(

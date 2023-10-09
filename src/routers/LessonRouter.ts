@@ -7,11 +7,11 @@ const lessonRouter =  express.Router()
 // create a lesson
 lessonRouter.post("/post", async (req, res) => {
     try {
+      console.log("enters post method in lesson router")
        const { courseId,name,description } = req.body;
     
       const result = await prisma.lesson.create({
         data: {
-        
           name,
           description
         },

@@ -11,8 +11,9 @@ selfAssessmentRouter.post('/start-assessment', async (req, res) => {
     const newAssessment = await prisma.selfAssessment.create({
       data: {
         dateTaken: new Date(),
-        isPractice: isPractice,
+        isPractice: isPractice, //diffrentiates between prcatice sessions and Self Assessments
         userId: userId,
+        score: 0, // Initializing score to 0
       },
     });
 
@@ -30,7 +31,7 @@ selfAssessmentRouter.put('/end-assessment/:assessmentId', async (req, res) => {
 
     const updatedAssessment = await prisma.selfAssessment.update({
       where: {
-        assessmentId: parseInt(assessmentId, 10),
+        assessmentId: assessmentId, 
       },
       data: {
         score: score,
@@ -43,5 +44,6 @@ selfAssessmentRouter.put('/end-assessment/:assessmentId', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 
 export default selfAssessmentRouter;

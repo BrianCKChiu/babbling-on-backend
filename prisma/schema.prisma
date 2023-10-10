@@ -58,8 +58,10 @@ model Lesson {
 
 model User {
   userId          String           @id @default(uuid())
+  email           String           @unique
   selfAssessments SelfAssessment[]
 }
+
 
 model SelfAssessment {
   score        Int

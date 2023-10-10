@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@prisma/client": "^5.2.0",
+    "axios": "^1.5.1",
     "base-x": "^4.0.0",
     "dotenv": "^16.3.1",
     "env-cmd": "^10.1.0",

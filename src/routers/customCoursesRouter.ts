@@ -32,13 +32,12 @@ customCoursesRouter.post("/post", async (req:Request, res:Response) => {
         // test 
         console.log(req.body);
 
-        const {
-            name,
-            description,
-        }: { name: string; description: string} = req.body;
-      
+        // const { name, description, topicId}: { name: string; description: string; topicId: String} = req.body;
+        const { name, description, topicId} = req.body
+        
           const result   = await prisma.course.create({
             data:{
+               topicId,
                name,
                description
             },
@@ -110,6 +109,33 @@ customCoursesRouter.delete('/delete/', async(req, res) => {
     res.json({ message: 'Course deleted succesfully' });
   }catch(error){
     console.error('Error deleting course', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// search for a course
+customCoursesRouter.get('/search', async (req, res) => {
+  try {
+    // Get search criteria from query parameters
+    const { keyword } = req.query;
+
+    if (!keyword) {
+      return res.status(400).json({ error: 'Missing search keyword' });
+    }
+
+    // Perform a case-insensitive search for lessons based on the keyword
+    const lessons = await prisma.course.findMany({
+      where: {
+        OR: [
+          { name: { contains: String(keyword)} },
+          { description: { contains: String(keyword)} },
+        ],
+      },
+    });
+
+    res.json(lessons); // returns the lesson entity in json format in the terminal
+  } catch (error) {
+    console.error('Error searching for courses:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });

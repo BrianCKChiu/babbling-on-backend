@@ -34,7 +34,7 @@ gestureRouter.post("/post", async (req, res) => {
 //get signs
 gestureRouter.get("/get", async (req, res) => {
     try {
-      const gestures = await prisma.lesson.findMany({
+      const gestures = await prisma.gesture.findMany({
         include: {
         },
       });
@@ -51,16 +51,16 @@ gestureRouter.get("/get", async (req, res) => {
   });
 
 
-// update sign 
+// update sign - IN PROGRESS, MISSING "IMAGE"
 gestureRouter.patch('/update/:id',async(req,res)=>{
   try {
-      const { name, description } = req.body;
+      const { phrase, topicId } = req.body;
   
-      const updatedGesture = await prisma.lesson.update({
+      const updatedGesture = await prisma.gesture.update({
         where: { id: req.params.id},
         data: {
-          name,
-          description,
+          phrase,
+          topicId
         },
         include: {
         },
@@ -117,11 +117,11 @@ gestureRouter.get('/search', async (req, res) => {
     }
 
     // Perform a case-insensitive search for lessons based on the keyword
-    const lessons = await prisma.lesson.findMany({
+    const lessons = await prisma.gesture.findMany({
       where: {
         OR: [
-          { name: { contains: String(keyword)} },
-          { description: { contains: String(keyword)} },
+          { phrase: { contains: String(keyword)} },
+          { topicId: { contains: String(keyword)} },
         ],
       },
     });

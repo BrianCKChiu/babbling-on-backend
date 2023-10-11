@@ -13,9 +13,9 @@ model Gesture {
   phrase       String
   verified     Boolean        @default(false)
   topicId      String
-  lessonId     String
+  lessonId     String?         
   topic        Topic          @relation(fields: [topicId], references: [id])
-  lesson       Lesson         @relation(fields: [lessonId], references: [id])
+  lesson       Lesson?         @relation(fields: [lessonId], references: [id])
   gestureMedia GestureMedia[]
 
   @@index([topicId])
@@ -51,13 +51,15 @@ model Lesson {
   id          String    @id @default(uuid())
   description String
   name        String
-  gestures    Gesture[]
   courseId    String
+  gestures    Gesture[]
   course      Course    @relation(fields: [courseId], references: [id])
 }
 
 model User {
-  userId          String           @id @default(uuid())
+  userId          String           @id
+  email           String           @unique
+  role            String           @default("STUDENT")
   selfAssessments SelfAssessment[]
 }
 

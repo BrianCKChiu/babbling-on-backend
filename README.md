@@ -29,6 +29,7 @@ Creating tables in prisma is done by creating a new model in the `schema.prisma`
 - `npx prisma db pull` will pull the database schema into the prisma schema file
 - `npx prisma db push` will push the prisma schema file to the database
 - `npx prisma generate` will generate the prisma client
+- `npx prisma seed` will seed the database with the data in the `seed.ts` file
 
 Documentation for prisma can be found [here](https://www.prisma.io/docs/concepts/components/prisma-schema).
 

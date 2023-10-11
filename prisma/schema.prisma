@@ -13,9 +13,9 @@ model Gesture {
   phrase       String
   verified     Boolean        @default(false)
   topicId      String
-  lessonId     String
+  lessonId     String?
   topic        Topic          @relation(fields: [topicId], references: [id])
-  lesson       Lesson         @relation(fields: [lessonId], references: [id]) // one to many relation between lesson and gesture
+  lesson       Lesson?        @relation(fields: [lessonId], references: [id])
   gestureMedia GestureMedia[]
 
   @@index([topicId])
@@ -42,23 +42,22 @@ model Topic {
 }
 
 model Course {
-  id           String        @id @default(uuid())
-  name         String
-  description  String
-  topicId      String
-  topic        Topic          @relation(fields: [topicId], references: [id])
-  lessons      Lesson[] // relationship of one course to many lessons
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  topicId     String
+  lessons     Lesson[]
 
   @@index([topicId])
 }
 
 model Lesson {
-  id           String        @id @default(uuid())
-  description  String
-  name         String
-  gestures     Gesture[]
-  course       Course   @relation(fields: [courseId], references: [id])  // relationship of many lessons to one course
-  courseId     String
+  id          String    @id @default(uuid())
+  description String
+  name        String
+  courseId    String
+  gestures    Gesture[]
+  course      Course    @relation(fields: [courseId], references: [id])
 
   @@index([courseId])
 }

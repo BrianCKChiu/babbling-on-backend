@@ -15,3 +15,13 @@
 4. Run the app using `python app.py`
 
 Flask endpoint to access AI: `http://localhost:8082/predict`
+
+## Creating Docker Image
+
+1. Run `docker build -t asl-hand-gesture-ai .`
+2. Start docker image locally `docker run -p 8082:8082 asl-hand-gesture-ai`
+
+### Deploy to GCloud
+
+1. Run `docker build -t gcr.io/babbling-on-2023/asl-hand-gesture-ai .`
+2. Run `docker push gcr.io/babbling-on-2023/asl-hand-gesture-ai`

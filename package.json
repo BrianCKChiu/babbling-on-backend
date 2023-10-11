@@ -1,7 +1,10 @@
 {
   "name": "babbling-on-backend",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "",
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "scripts": {
  
     "dev":"ts-node-dev --respawn --transpile-only src/index.ts",
@@ -14,8 +17,9 @@
   "license": "ISC",
   "devDependencies": {
     "@types/express": "^4.17.1",
+    "@types/node": "^20.8.4",
     "prisma": "^5.2.0",
-    "ts-node-dev": "^2.0.0",
+    "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   },
   "dependencies": {

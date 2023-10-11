@@ -13,9 +13,9 @@ model Gesture {
   phrase       String
   verified     Boolean        @default(false)
   topicId      String
-  lessonId     String?         
+  lessonId     String?
   topic        Topic          @relation(fields: [topicId], references: [id])
-  lesson       Lesson?         @relation(fields: [lessonId], references: [id])
+  lesson       Lesson?        @relation(fields: [lessonId], references: [id])
   gestureMedia GestureMedia[]
 
   @@index([topicId])
@@ -44,7 +44,10 @@ model Course {
   id          String   @id @default(uuid())
   name        String
   description String
+  topicId     String
   lessons     Lesson[]
+
+  @@index([topicId])
 }
 
 model Lesson {
@@ -54,26 +57,6 @@ model Lesson {
   courseId    String
   gestures    Gesture[]
   course      Course    @relation(fields: [courseId], references: [id])
-}
 
-model User {
-  userId          String           @id
-  email           String           @unique
-  role            String           @default("STUDENT")
-  selfAssessments SelfAssessment[]
-}
-
-model SelfAssessment {
-  score        Int
-  dateTaken    DateTime
-  assessmentId Int      @id @default(autoincrement())
-  userId       String
-  isPractice   Boolean
-  user         User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
-}
-
-model LessonToCourse {
-  id       String @id
-  courseId String
-  lessonId String
+  @@index([courseId])
 }

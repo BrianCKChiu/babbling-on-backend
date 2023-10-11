@@ -21,11 +21,14 @@ async function main() {
       verified: true,
       topicId: "1",
       gestureMedia: {
-        create: {
-          id: "1",
-          mediaType: "image",
-          mediaRef: "images/A_test.png",
-        },
+        create: [
+          {
+            id: "1",
+            mediaType: "image",
+            mediaRef: "images/A_test.png",
+            updatedAt: new Date(),
+          },
+        ],
       },
     },
   });
@@ -38,11 +41,14 @@ async function main() {
       verified: true,
       topicId: "1",
       gestureMedia: {
-        create: {
-          id: "2",
-          mediaType: "image",
-          mediaRef: "images/B_test.png",
-        },
+        create: [
+          {
+            id: "2",
+            mediaType: "image",
+            mediaRef: "images/B_test.png",
+            updatedAt: new Date(),
+          },
+        ],
       },
     },
   });
@@ -55,11 +61,14 @@ async function main() {
       verified: true,
       topicId: "1",
       gestureMedia: {
-        create: {
-          id: "3",
-          mediaType: "image",
-          mediaRef: "images/C_test.png",
-        },
+        create: [
+          {
+            id: "3",
+            mediaType: "image",
+            mediaRef: "images/C_test.png",
+            updatedAt: new Date(),
+          },
+        ],
       },
     },
   });
@@ -72,11 +81,14 @@ async function main() {
       verified: true,
       topicId: "1",
       gestureMedia: {
-        create: {
-          id: "4",
-          mediaType: "image",
-          mediaRef: "images/D_test.png",
-        },
+        create: [
+          {
+            id: "4",
+            mediaType: "image",
+            mediaRef: "images/D_test.png",
+            updatedAt: new Date(),
+          },
+        ],
       },
     },
   });
@@ -89,11 +101,14 @@ async function main() {
       verified: true,
       topicId: "1",
       gestureMedia: {
-        create: {
-          id: "5",
-          mediaType: "image",
-          mediaRef: "images/E_test.png",
-        },
+        create: [
+          {
+            id: "5",
+            mediaType: "image",
+            mediaRef: "images/E_test.png",
+            updatedAt: new Date(),
+          },
+        ],
       },
     },
   });

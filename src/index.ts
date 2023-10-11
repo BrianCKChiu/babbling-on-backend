@@ -2,8 +2,8 @@ import express from "express";
 import quizRouter from "./routers/quizRouter";
 import customCoursesRouter from "./routers/customCoursesRouter";
 import bodyParser from "body-parser";
-import lessonRouter from "./routers/LessonRouter";
-import gestureRouter from "./routers/GestureRouter";
+import lessonRouter from "./routers/lessonRouter";
+import gestureRouter from "./routers/gestureRouter";
 import userRouter from "./routers/userRouter";
 
 const app = express();

@@ -6,6 +6,23 @@ import { authenticateToken } from "../utils/authenticateToken";
 
 const quizRouter = express.Router();
 
+quizRouter.post("/details", async (req, res) => {
+  const { quizId, token } = req.body;
+  if (token == null) {
+    return res.status(400).send("Invalid Token");
+  }
+  if (quizId == null) {
+    return res.status(400).send("Bad request");
+  }
+  const quizDetailDoc = await db.collection("quizData").doc(quizId).get();
+
+  const quizDetailData = quizDetailDoc.data();
+  if (quizDetailData == null) {
+    return res.status(404).send("Quiz not found");
+  }
+  return res.status(200).json(quizDetailData);
+});
+
 quizRouter.post("/create", async (req, res) => {
   try {
     console.log(req.body);
@@ -15,7 +32,7 @@ quizRouter.post("/create", async (req, res) => {
       options,
     }: { token: string; topic: string; options: QuizOptions } = req.body;
     if (token == null) {
-      return res.status(400).send("Bad request");
+      return res.status(400).send("Invalid Token");
     }
     // authenticate user
     const user = await authenticateToken(token);

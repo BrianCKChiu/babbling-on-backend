@@ -1,4 +1,5 @@
 import { authenticateToken } from "../auth/authenticateToken";
+import { authenticateUser } from "../auth/authenticateUser";
 import { prisma } from "../database/prisma";
 import express from "express";
 
@@ -12,15 +13,8 @@ userRouter.post("/signUp", async (req, res) => {
       role,
       token,
     }: { email: string; uid: string; role: string; token: string } = req.body;
-    console.log("bb");
 
-    if (token == null) {
-      return res.status(400).send("Bad request");
-    }
-    const user = await authenticateToken(token);
-    if (user == null) {
-      return res.status(401).send("Unauthorized");
-    }
+    await authenticateUser(token);
 
     await prisma.user.create({
       data: {
@@ -37,7 +31,7 @@ userRouter.post("/signUp", async (req, res) => {
     if (error.code === "P2002" && error.meta.target.includes("email")) {
       return res.status(400).json({ error: "Email already in use" });
     }
-    return res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ error: `Internal Server Error: {e}` });
   }
 });
 

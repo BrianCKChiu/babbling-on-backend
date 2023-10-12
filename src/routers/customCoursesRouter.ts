@@ -1,14 +1,13 @@
 import express from "express";
-import { db } from "../database/firebase";
 import { prisma } from "../database/prisma";
 import { Request, Response } from "express";
-import { authenticateToken } from "../auth/authenticateToken";
+import { authenticateUser } from "../auth/authenticateUser";
 const customCoursesRouter = express.Router();
 
 customCoursesRouter.get("/", async (req: Request, res: Response) => {
   const { token } = req.body;
   try {
-    await authenticateToken(token);
+    await authenticateUser(token);
     const customCourses = await prisma.course.findMany();
 
     res.status(200).json({ courses: customCourses });
@@ -20,7 +19,7 @@ customCoursesRouter.get("/", async (req: Request, res: Response) => {
 customCoursesRouter.post("/myCourses", async (req: Request, res: Response) => {
   const { token } = req.body;
   try {
-    const user = await authenticateToken(token);
+    const user = await authenticateUser(token);
     const userCourses = await prisma.course.findMany({
       where: { ownerId: user.uid },
     });
@@ -58,7 +57,7 @@ customCoursesRouter.post("/post", async (req: Request, res: Response) => {
 
     // const { name, description, topicId}: { name: string; description: string; topicId: String} = req.body;
     const { name, description, topicId, token } = req.body;
-    const user = await authenticateToken(token);
+    const user = await authenticateUser(token);
 
     const result = await prisma.course.create({
       data: {

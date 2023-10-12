@@ -1,4 +1,3 @@
-import { authenticateToken } from "../auth/authenticateToken";
 import { authenticateUser } from "../auth/authenticateUser";
 import { prisma } from "../database/prisma";
 import express from "express";
@@ -33,6 +32,35 @@ userRouter.post("/signUp", async (req, res) => {
     }
     return res.status(500).json({ error: `Internal Server Error: {e}` });
   }
+});
+
+userRouter.post("/", async (req, res) => {
+  try {
+    const { token } = req.body;
+    console.log(token);
+
+    const user = await authenticateUser(token);
+    const userData = await prisma.user.findUnique({
+      where: { userId: user.uid },
+    });
+    if (userData == null) {
+      await prisma.user.create({
+        data: {
+          email: user.email,
+          userId: user.uid,
+          role: "PROFESSOR",
+        },
+      });
+      console.log(userData);
+
+      return res.status(200).json({ message: "user created" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+
+  return res.status(200).json({ message: "ok" });
 });
 
 userRouter.put("/update-email/:userId", async (req, res) => {

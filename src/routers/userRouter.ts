@@ -1,4 +1,4 @@
-import { authenticateToken } from "../utils/authenticateToken";
+import { authenticateToken } from "../auth/authenticateToken";
 import { prisma } from "../database/prisma";
 import express from "express";
 

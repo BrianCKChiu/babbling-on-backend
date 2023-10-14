@@ -4,18 +4,12 @@ import { Request, Response } from "express";
 import { authenticateUser } from "../auth/authenticateUser";
 const customCoursesRouter = express.Router();
 
-customCoursesRouter.post("/all", async (req: Request, res: Response) => {
-  const { token } = req.body;
-  try {
-    await authenticateUser(token);
-    const customCourses = await prisma.course.findMany();
-
-    res.status(200).json({ courses: customCourses });
-  } catch (e) {
-    res.status(500).send(`Internal server error: ${e}`);
-  }
-});
-
+/**
+ * Get all courses created by the user
+ * @param {string} token user's token
+ * @param {string} courseId
+ * @returns {Response}
+ */
 customCoursesRouter.post("/myCourses", async (req: Request, res: Response) => {
   const { token } = req.body;
   try {
@@ -160,6 +154,66 @@ customCoursesRouter.get("/search", async (req, res) => {
   } catch (error) {
     console.error("Error searching for courses:", error);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+/**
+ * Delete all lessons and gestures associated with a course and delete the course
+ * @param {string} token user's token
+ * @param {string} courseId course
+ * @returns {Response}
+ */
+customCoursesRouter.post("/deleteAll", async (req: Request, res: Response) => {
+  const { token, courseId } = req.body;
+  console.log(req.body);
+  if (token == null || courseId == null) {
+    return res
+      .status(400)
+      .json({ error: "Bad request: Token and course id required" });
+  }
+
+  try {
+    const user = await authenticateUser(token);
+
+    if (user == null) {
+      return res.status(401).json({ error: "Not Authenticated" });
+    }
+    const course = await prisma.course.findUnique({
+      where: { id: courseId },
+    });
+    console.log(course);
+    if (course.ownerId !== user.uid) {
+      return res.status(401).json({ error: "Insufficient permissions" });
+    }
+
+    const courseLessons = await prisma.lesson.findMany({
+      where: { courseId: courseId },
+    });
+
+    const gestureList = await prisma.gesture.findMany({
+      where: { lessonId: { in: courseLessons.map((lesson) => lesson.id) } },
+    });
+
+    await prisma.lesson.deleteMany({
+      where: { courseId: courseId },
+    });
+
+    await prisma.gesture.deleteMany({
+      where: { lessonId: { in: courseLessons.map((lesson) => lesson.id) } },
+    });
+
+    await prisma.gestureMedia.deleteMany({
+      where: { gestureId: { in: gestureList.map((gesture) => gesture.id) } },
+    });
+
+    await prisma.course.delete({
+      where: { id: courseId },
+    });
+
+    res.status(200).json({ message: "Course deleted" });
+  } catch (e) {
+    console.log(e);
+    res.status(500).send(`Internal server error: ${e}`);
   }
 });
 

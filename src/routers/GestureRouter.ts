@@ -58,8 +58,17 @@ gestureRouter.get("/get", async (req, res) => {
 // update sign - IN PROGRESS, MISSING "IMAGE"
 gestureRouter.patch("/update/:id", async (req, res) => {
   try {
-    const { phrase, topicId } = req.body;
+    const { phrase, topicId, mediaRef, gestureId } = req.body;
 
+    if (mediaRef != null) {
+      await prisma.gestureMedia.create({
+        data: {
+          mediaRef: mediaRef,
+          mediaType: "IMAGE",
+          gestureId: gestureId,
+        },
+      });
+    }
     const updatedGesture = await prisma.gesture.update({
       where: { id: req.params.id },
       data: {

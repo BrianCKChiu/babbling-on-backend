@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import { authenticateUser } from "../auth/authenticateUser";
 const customCoursesRouter = express.Router();
 
-customCoursesRouter.get("/", async (req: Request, res: Response) => {
+customCoursesRouter.post("/all", async (req: Request, res: Response) => {
   const { token } = req.body;
   try {
     await authenticateUser(token);
@@ -61,12 +61,11 @@ customCoursesRouter.post("/post", async (req: Request, res: Response) => {
 
     const result = await prisma.course.create({
       data: {
-        topicId,
-        name,
-        description,
+        topicId: "1",
+        name: name,
+        description: description,
         ownerId: user.uid,
       },
-      include: { lessons: true }, // include the lesson list
     });
     console.log(result);
     // verify the userId has a role of tutor or teacher
@@ -75,8 +74,7 @@ customCoursesRouter.post("/post", async (req: Request, res: Response) => {
     // }
 
     // after post request test
-
-    res.status(201).json(result);
+    res.status(201).json({ course: result });
   } catch (error) {
     console.log(error);
     res.status(500).send(`Internal server error: ${error}`);

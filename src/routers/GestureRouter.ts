@@ -7,7 +7,6 @@ const gestureRouter = express.Router();
 // create a gesture
 gestureRouter.post("/post", async (req, res) => {
   try {
-    const {} = req.body;
     console.log("enters post method in gesture router");
 
     const { token, gestureId, lessonId, phrase, verified, topicId } = req.body;
@@ -19,13 +18,12 @@ gestureRouter.post("/post", async (req, res) => {
     if (user == null) {
       return res.status(400).json({ error: "Not Authenticated" });
     }
-
     const result = await prisma.gesture.create({
       data: {
-        lessonId,
-        phrase,
-        verified,
-        topicId,
+        lessonId: lessonId,
+        phrase: phrase,
+        verified: verified,
+        topicId: topicId,
       },
       include: {},
     });
@@ -65,10 +63,11 @@ gestureRouter.patch("/update/:id", async (req, res) => {
         data: {
           mediaRef: mediaRef,
           mediaType: "IMAGE",
-          gestureId: gestureId,
+          gestureId: req.params.id,
         },
       });
     }
+
     const updatedGesture = await prisma.gesture.update({
       where: { id: req.params.id },
       data: {

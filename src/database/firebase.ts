@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 if (process.env.FIREBASE_SERVICE_ACCOUNT == null) {
-   throw new Error("FIREBASE_SERVICE_ACCOUNT is not set");
+  throw new Error("FIREBASE_SERVICE_ACCOUNT is not set");
 }
 
 // Initialize Firebase
@@ -27,10 +27,3 @@ export const db = admin.firestore();
 export const gestureMediaBucket = storage().bucket(
   "gs://babbling-on-2023.appspot.com"
 );
-
-export function authenticateUser(userId: string): boolean {
-  if (userId == null) {
-    return false;
-  }
-  return true;
-}

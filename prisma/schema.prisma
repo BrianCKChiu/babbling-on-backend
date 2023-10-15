@@ -47,9 +47,12 @@ model Course {
   description String
   topicId     String
   topic       Topic    @relation(fields: [topicId], references: [id])
+  ownerId     String
+  owner       User @relation(fields: [ownerId], references: [userId])
   lessons     Lesson[]
 
   @@index([topicId])
+  @@index ([ownerId])
 }
 
 model Lesson {
@@ -61,6 +64,22 @@ model Lesson {
   course      Course    @relation(fields: [courseId], references: [id])
 
   @@index([courseId])
+}
+model User {
+  userId          String           @id
+  email           String           @unique
+  role            String           @default("STUDENT")
+  Course          Course[]
+  selfAssessments SelfAssessment[]
+}
+
+model SelfAssessment {
+  score        Int
+  dateTaken    DateTime
+  assessmentId Int      @id @default(autoincrement())
+  userId       String
+  isPractice   Boolean
+  user         User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
 }
 
 // model LessonToCourse {

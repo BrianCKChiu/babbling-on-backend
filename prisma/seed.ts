@@ -24,7 +24,7 @@ async function main() {
         create: [
           {
             id: "1",
-            mediaType: "image",
+            mediaType: "IMAGE",
             mediaRef: "images/A_test.png",
             updatedAt: new Date(),
           },
@@ -44,7 +44,7 @@ async function main() {
         create: [
           {
             id: "2",
-            mediaType: "image",
+            mediaType: "IMAGE",
             mediaRef: "images/B_test.png",
             updatedAt: new Date(),
           },
@@ -64,7 +64,7 @@ async function main() {
         create: [
           {
             id: "3",
-            mediaType: "image",
+            mediaType: "IMAGE",
             mediaRef: "images/C_test.png",
             updatedAt: new Date(),
           },
@@ -84,7 +84,7 @@ async function main() {
         create: [
           {
             id: "4",
-            mediaType: "image",
+            mediaType: "IMAGE",
             mediaRef: "images/D_test.png",
             updatedAt: new Date(),
           },
@@ -104,7 +104,7 @@ async function main() {
         create: [
           {
             id: "5",
-            mediaType: "image",
+            mediaType: "IMAGE",
             mediaRef: "images/E_test.png",
             updatedAt: new Date(),
           },

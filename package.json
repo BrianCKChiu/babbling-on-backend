@@ -1,10 +1,13 @@
 {
   "name": "babbling-on-backend",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "",
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "scripts": {
-    "dev": "npx tsc; node dist/index.js",
-    "start": "npx tsc; node dist/index.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "start": "npx tsc; node dist/src/index.js",
     "deploy": "glcoud app deploy",
     "preview": "glcoud app browse"
   },
@@ -12,14 +15,18 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/cors": "^2.8.14",
     "@types/express": "^4.17.1",
+    "@types/node": "^20.8.4",
     "prisma": "^5.2.0",
+    "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   },
   "dependencies": {
     "@prisma/client": "^5.2.0",
     "axios": "^1.5.1",
     "base-x": "^4.0.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "env-cmd": "^10.1.0",
     "express": "^4.17.1",

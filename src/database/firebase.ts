@@ -27,10 +27,3 @@ export const db = admin.firestore();
 export const gestureMediaBucket = storage().bucket(
   "gs://babbling-on-2023.appspot.com"
 );
-
-export function authenticateUser(userId: string): boolean {
-  if (userId == null) {
-    return false;
-  }
-  return true;
-}

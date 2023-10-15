@@ -2,9 +2,29 @@ import { QuizGenerator } from "../components/quiz/quizGenerator";
 import { Quiz, QuizOptions, QuizStatus } from "../components/quiz/quiz";
 import express from "express";
 import { db } from "../database/firebase";
-import { authenticateToken } from "../utils/authenticateToken";
+import { authenticateUser } from "../auth/authenticateUser";
 
 const quizRouter = express.Router();
+
+quizRouter.post("/details", async (req, res) => {
+  try {
+    const { quizId, token } = req.body;
+    await authenticateUser(token);
+
+    if (quizId == null) {
+      return res.status(400).send("Bad request");
+    }
+    const quizDetailDoc = await db.collection("quizData").doc(quizId).get();
+
+    const quizDetailData = quizDetailDoc.data();
+    if (quizDetailData == null) {
+      return res.status(404).send("Quiz not found");
+    }
+    return res.status(200).json(quizDetailData);
+  } catch (error) {
+    return res.status(500).send(`Internal server error: ${error}`);
+  }
+});
 
 quizRouter.post("/create", async (req, res) => {
   try {
@@ -15,10 +35,10 @@ quizRouter.post("/create", async (req, res) => {
       options,
     }: { token: string; topic: string; options: QuizOptions } = req.body;
     if (token == null) {
-      return res.status(400).send("Bad request");
+      return res.status(400).send("Invalid Token");
     }
     // authenticate user
-    const user = await authenticateToken(token);
+    const user = await authenticateUser(token);
     if (user == null) {
       return res.status(401).send("Unauthorized");
     }
@@ -39,7 +59,7 @@ quizRouter.post("/submitAnswer", async (req, res) => {
       return res.status(400).send("Bad request");
     }
     // authenticate user
-    const user = await authenticateToken(token);
+    const user = await await authenticateUser(token);
     if (user == null) {
       return res.status(401).send("Unauthorized");
     }

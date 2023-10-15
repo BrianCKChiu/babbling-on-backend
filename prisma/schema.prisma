@@ -13,9 +13,9 @@ model Gesture {
   phrase       String
   verified     Boolean        @default(false)
   topicId      String
-  lessonId     String
+  lessonId     String?
   topic        Topic          @relation(fields: [topicId], references: [id])
-  lesson       Lesson         @relation(fields: [lessonId], references: [id])
+  lesson       Lesson?        @relation(fields: [lessonId], references: [id])
   gestureMedia GestureMedia[]
 
   @@index([topicId])
@@ -44,21 +44,30 @@ model Course {
   id          String   @id @default(uuid())
   name        String
   description String
+  topicId     String
+  ownerId     String
+  owner       User @relation(fields: [ownerId], references: [userId])
   lessons     Lesson[]
+
+  @@index([topicId])
+  @@index ([ownerId])
 }
 
 model Lesson {
   id          String    @id @default(uuid())
   description String
   name        String
-  gestures    Gesture[]
   courseId    String
+  gestures    Gesture[]
   course      Course    @relation(fields: [courseId], references: [id])
-}
 
+  @@index([courseId])
+}
 model User {
-  userId          String           @id @default(uuid())
+  userId          String           @id
   email           String           @unique
+  role            String           @default("STUDENT")
+  Course          Course[]
   selfAssessments SelfAssessment[]
 }
 
@@ -72,8 +81,20 @@ model SelfAssessment {
   user         User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
 }
 
-model LessonToCourse {
-  id       String @id
-  courseId String
-  lessonId String
-}
+// model LessonToCourse {
+//   id        String   @id @default(uuid())
+//   courseId  String
+//   course    Course   @relation(fields: [courseId], references: [id])
+//   lessonId  String
+//   lesson    Lesson   @relation(fields: [lessonId], references: [id])
+// }
+
+// model GestureToLesson {
+//   id        String  @id @default(uuid())
+//   lessonId  String
+//   lesson    Lesson  @relation(fields: [lessonId], references: [id])
+//   gestureId String
+//   gesture   Gesture @relation(fields: [gestureId], references: [id])
+
+//   // @index([lessonId])
+// }

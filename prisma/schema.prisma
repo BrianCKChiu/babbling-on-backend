@@ -79,6 +79,8 @@ model SelfAssessment {
   userId       String
   isPractice   Boolean
   user         User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 // model LessonToCourse {

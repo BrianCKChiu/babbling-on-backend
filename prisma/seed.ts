@@ -25,7 +25,7 @@ async function main() {
           {
             id: "1",
             mediaType: "IMAGE",
-            mediaRef: "images/A_test.png",
+            mediaRef: "images/A_test.jpg",
             updatedAt: new Date(),
           },
         ],
@@ -45,7 +45,7 @@ async function main() {
           {
             id: "2",
             mediaType: "IMAGE",
-            mediaRef: "images/B_test.png",
+            mediaRef: "images/B_test.jpg",
             updatedAt: new Date(),
           },
         ],
@@ -65,7 +65,7 @@ async function main() {
           {
             id: "3",
             mediaType: "IMAGE",
-            mediaRef: "images/C_test.png",
+            mediaRef: "images/C_test.jpg",
             updatedAt: new Date(),
           },
         ],
@@ -85,7 +85,7 @@ async function main() {
           {
             id: "4",
             mediaType: "IMAGE",
-            mediaRef: "images/D_test.png",
+            mediaRef: "images/D_test.jpg",
             updatedAt: new Date(),
           },
         ],
@@ -105,7 +105,7 @@ async function main() {
           {
             id: "5",
             mediaType: "IMAGE",
-            mediaRef: "images/E_test.png",
+            mediaRef: "images/E_test.jpg",
             updatedAt: new Date(),
           },
         ],

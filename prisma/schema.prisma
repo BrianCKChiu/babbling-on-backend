@@ -46,6 +46,7 @@ model Course {
   name        String
   description String
   topicId     String
+  topic       Topic    @relation(fields: [topicId], references: [id])
   lessons     Lesson[]
 
   @@index([topicId])

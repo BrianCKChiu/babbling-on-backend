@@ -10,6 +10,8 @@ const customCoursesRouter = express.Router();
  * @param {string} courseId
  * @returns {Response}
  */
+
+// get courses made by the user
 customCoursesRouter.post("/myCourses", async (req: Request, res: Response) => {
   const { token } = req.body;
   try {
@@ -23,6 +25,11 @@ customCoursesRouter.post("/myCourses", async (req: Request, res: Response) => {
     res.status(500).send(`Internal server error: ${e}`);
   }
 });
+
+// get courses taken by the user
+// customCoursesRouter.get("/takenCourses", async (req: Request, res: Response) => {
+
+// };
 
 // listens for HTTP requests and displays the course information
 customCoursesRouter.get("/get", async (req: Request, res: Response) => {

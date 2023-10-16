@@ -48,7 +48,9 @@ model Course {
   topicId     String
   topic       Topic    @relation(fields: [topicId], references: [id])
   ownerId     String
-  owner       User @relation(fields: [ownerId], references: [userId])
+  owner       User     @relation(fields: [ownerId], references: [userId])
+  // userId      String
+  // user        User[]    @relation(fields: [userId], references: [userId])
   lessons     Lesson[]
 
   @@index([topicId])
@@ -69,7 +71,9 @@ model User {
   userId          String           @id
   email           String           @unique
   role            String           @default("STUDENT")
-  Course          Course[]
+  // coursesMade     Course[]
+  coursesTaken    Course[]
+
   selfAssessments SelfAssessment[]
 }
 

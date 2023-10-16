@@ -6,6 +6,13 @@ import { authenticateUser } from "../auth/authenticateUser";
 
 const quizRouter = express.Router();
 
+/**
+ * gets details for a quiz
+ * @param {string} quizId id of the quiz
+ * @param {string} token user's token
+ *
+ * @returns {Response} 200 response code with quiz details
+ */
 quizRouter.post("/details", async (req, res) => {
   try {
     const { quizId, token } = req.body;
@@ -26,6 +33,15 @@ quizRouter.post("/details", async (req, res) => {
   }
 });
 
+/**
+ * Creates a quiz
+ *
+ * @param {string} token user's token
+ * @param {string} topic topic of the quiz
+ * @param {QuizOptions} options quiz options
+ *
+ * @returns {Response} 200 response code with quiz data and questions in the quiz
+ */
 quizRouter.post("/create", async (req, res) => {
   try {
     console.log(req.body);
@@ -51,6 +67,15 @@ quizRouter.post("/create", async (req, res) => {
   }
 });
 
+/**
+ * Updates the quiz Results
+ *
+ * @param {string} token user's token
+ * @param {string} quizId id of the quiz
+ * @param {QuestionResult[]} results quiz results
+ *
+ * @returns {Response}
+ */
 quizRouter.post("/submitAnswer", async (req, res) => {
   try {
     const { token, quizId, results } = req.body;

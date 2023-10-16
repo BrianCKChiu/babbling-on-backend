@@ -9,6 +9,7 @@ export interface QuestionMcq extends Question {
   type: "mcq";
   mediaRef: string;
   answer: string;
+  answerId: string;
   choices: Array<string>;
 }
 
@@ -22,4 +23,3 @@ export type QuestionResult = {
   answer: string;
   correct: boolean;
 };
-

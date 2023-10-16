@@ -1,48 +1,50 @@
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { generateUuid62 } from "../../utils/uuid";
 import { db } from "../../database/firebase";
-import { QuestionMatching, QuestionMcq, QuestionType } from "./question";
+import {
+  Question,
+  QuestionMatching,
+  QuestionMcq,
+  QuestionType,
+} from "./question";
 import { Quiz, QuizOptions, QuizStatus } from "./quiz";
-import { Gesture } from "@prisma/client";
 import { prisma } from "../../database/prisma";
 
-const gestureArr: Gesture[] = [
-  { phrase: "a", topicId: "1", id: "1", lessonId: "1", verified: true },
-  { phrase: "b", topicId: "1", id: "2", lessonId: "1", verified: true },
-  { phrase: "c", topicId: "1", id: "3", lessonId: "1", verified: true },
-  { phrase: "d", topicId: "1", id: "4", lessonId: "1", verified: true },
-  { phrase: "e", topicId: "1", id: "5", lessonId: "1", verified: true },
-];
-
 export class QuizGenerator {
+  /**
+   *  Creates a quiz based on the topic and options
+   *
+   * @param {string} userId user who requested the quiz
+   * @param {string} topic topic for the quiz
+   * @param {QuizOptions} options (optional) parameters that modifies how the quiz is generated, by default it will generate a quiz with 3 questions when no options are provided
+   * @returns {Quiz | undefined} generated quiz data along with the quiz id
+   */
   static async create(
     userId: string,
     topic: string,
-    options: QuizOptions = { length: 3 }
-  ): Promise<Quiz> {
+    options: QuizOptions = { length: 5 }
+  ): Promise<Quiz | undefined> {
     const questions = [];
-
-    for (let i = 0; i < options.length; i++) {
-      // generate random question type
-      const questionType = "mcq"; //Math.random() > 0.3 ? "mcq" : "matching"; // 70% will be mcq, 30% will be matching
-
-      const question = await QuizGenerator.generateQuestion(
-        topic,
-        questionType
-      );
-      questions.push(question);
-    }
-
-    const quizData = {
-      dateCreated: Date.now(),
-      status: QuizStatus.INCOMPLETE,
-      userId: userId,
-      topic: topic,
-      questions: questions,
-      quizResults: [],
-    };
-
     try {
+      for (let i = 0; i < options.length; i++) {
+        // generate random question type
+        const questionType = Math.random() > 0.3 ? "mcq" : "matching"; // 70% will be mcq, 30% will be matching
+
+        const question = await QuizGenerator.generateQuestion(
+          topic,
+          questionType,
+          questions
+        );
+        questions.push(question);
+      }
+      const quizData = {
+        dateCreated: Date.now(),
+        status: QuizStatus.INCOMPLETE,
+        userId: userId,
+        topic: topic,
+        questions: questions,
+        quizResults: [],
+      };
+
       const ref = await db.collection("quizzes").add(quizData);
       return { id: ref.id, ...quizData };
     } catch (e) {
@@ -51,19 +53,32 @@ export class QuizGenerator {
     return undefined;
   }
 
+  /**
+   * Generates a question based on the topic and type
+   *
+   * @param {string} topic topic of question should be generated
+   * @param {QuestionType} type question type that is being generated
+   * @param {Question[]} existingQuestions gestures that are already used in the quiz, prevents repeating questions with different options (used only in mcq questions)
+   * @returns {Question} a mcq or matching question
+   */
   private static async generateQuestion(
     topic: string,
-    type: QuestionType = "mcq"
+    type: QuestionType = "mcq",
+    existingQuestions: Question[]
   ): Promise<QuestionMcq | QuestionMatching> {
     // query for  gesture that is related to topic
     const gestureList = await prisma.gesture.findMany({
-      where: { topicId: topic },
+      where: { topicId: topic, verified: true },
     });
-    console.log(gestureList);
+
+    const existingQuestionIds = existingQuestions.map((q) => q.id);
     if (type === "mcq") {
-      const gesture = gestureList.filter((g) => g.topicId === topic)[
-        Math.floor(Math.random() * gestureArr.length)
-      ];
+      const gesture = gestureList.filter(
+        (g) =>
+          g.topicId === topic &&
+          g.verified === true &&
+          existingQuestionIds.includes(g.id) === false
+      )[Math.floor(Math.random() * gestureList.length)];
 
       const choices = gestureList
         .filter((g) => g.id !== gesture.id)
@@ -78,6 +93,7 @@ export class QuizGenerator {
         id: generateUuid62(),
         type: "mcq",
         mediaRef: mediaAnswer.mediaRef,
+        answerId: gesture.id,
         answer: gesture.phrase,
         choices: [...choices, gesture.phrase].sort(() => 0.5 - Math.random()),
       };
@@ -86,25 +102,18 @@ export class QuizGenerator {
       const gestures = gestureList.sort(() => 0.5 - Math.random()).slice(0, 5); // take first 5 gestures
       const media = await prisma.gestureMedia.findMany({
         where: {
-          OR: gestures.map((g) => {
-            return { gestureId: g.id };
-          }),
+          gestureId: { in: gestures.map((g) => g.id) },
         },
       });
-
+      console.log(media);
       // creating answers for matching question
-      const options: { answer: string; mediaRef: string }[] = gestures.map(
-        (g) => {
-          return {
-            answer: g.phrase,
-            mediaRef: media.filter((m) => {
-              m.gestureId == g.id;
-            })[0].mediaRef,
-          };
-        }
-      );
 
-      console.log(options);
+      const options: { answer: string; mediaRef: string }[] = [];
+
+      gestures.forEach((g) => {
+        const mediaRef = media.filter((m) => m.gestureId === g.id)[0].mediaRef;
+        options.push({ answer: g.phrase, mediaRef: mediaRef });
+      });
 
       const question: QuestionMatching = {
         id: questionId,
@@ -116,5 +125,3 @@ export class QuizGenerator {
     }
   }
 }
-
-const TEST_TOPICS = ["greetings", "farewells", "business", "shopping"];

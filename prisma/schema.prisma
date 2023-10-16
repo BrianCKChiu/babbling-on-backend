@@ -80,10 +80,12 @@ model User {
 model SelfAssessment {
   score        Int
   dateTaken    DateTime
-  assessmentId Int      @id @default(autoincrement())
+  assessmentId String      @id @default(uuid())
   userId       String
   isPractice   Boolean
   user         User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 // model LessonToCourse {

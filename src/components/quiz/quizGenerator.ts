@@ -21,13 +21,13 @@ export class QuizGenerator {
   static async create(
     userId: string,
     topic: string,
-    options: QuizOptions = { length: 3 }
+    options: QuizOptions = { length: 5 }
   ): Promise<Quiz | undefined> {
     const questions = [];
     try {
       for (let i = 0; i < options.length; i++) {
         // generate random question type
-        const questionType = Math.random() > 0.9 ? "mcq" : "matching"; // 70% will be mcq, 30% will be matching
+        const questionType = Math.random() > 0.3 ? "mcq" : "matching"; // 70% will be mcq, 30% will be matching
 
         const question = await QuizGenerator.generateQuestion(
           topic,

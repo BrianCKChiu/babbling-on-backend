@@ -41,21 +41,58 @@ model Topic {
   courses  Course[]
 }
 
+// model Course {
+//   id          String @id @default(uuid())
+//   name        String
+//   description String
+//   topicId     String
+//   topic       Topic  @relation(fields: [topicId], references: [id])
+//   ownerId     String
+//   owner       User   @relation(fields: [ownerId], references: [id]) // owner refers to user
+//   learners    User[]    @relation("coursesTaken", references: [id])
+//   learnesId   String
+
+//   lessons        Lesson[]
+//   CoursesToUsers CoursesToUsers[]
+
+//   @@index([topicId])
+//   @@index([ownerId])
+// }
+
 model Course {
-  id          String   @id @default(uuid())
+  id          String @id @default(uuid())
   name        String
   description String
   topicId     String
-  topic       Topic    @relation(fields: [topicId], references: [id])
+  topic       Topic  @relation(fields: [topicId], references: [id])
   ownerId     String
-  owner       User     @relation(fields: [ownerId], references: [userId])
-  // userId      String
-  // user        User[]    @relation(fields: [userId], references: [userId])
-  lessons     Lesson[]
+  owner       User   @relation("coursesMade", fields: [ownerId], references: [id])
 
-  @@index([topicId])
-  @@index ([ownerId])
+  // many to many 
+  learners       User[]
+  lessons        Lesson[]
+  CoursesToUsers CoursesToUsers[]
+
+  @@index([ownerId])
 }
+
+// many courses to many users 
+model CoursesToUsers {
+  // id              Int      @id @default(autoincrement())  
+  id       String @id @default(uuid())
+  user     User   @relation(fields: [userId], references: [id])
+  userId   String
+  course   Course @relation(fields: [courseId], references: [id])
+  courseId String
+}
+
+// model CoursesToUsers {
+//   id       Int      @id @default(autoincrement())
+//   user     User     @relation(fields: [userId], references: [id])
+//   userId   String   @map("user_id")
+//   course   Course   @relation(fields: [courseId], references: [id])
+//   courseId String
+// }
 
 model Lesson {
   id          String    @id @default(uuid())
@@ -67,23 +104,25 @@ model Lesson {
 
   @@index([courseId])
 }
+
 model User {
-  userId          String           @id
+  id              String           @id @default(uuid())
   email           String           @unique
   role            String           @default("STUDENT")
-  // coursesMade     Course[]
+  coursesMade     Course[]         @relation("coursesMade")
   coursesTaken    Course[]
-
   selfAssessments SelfAssessment[]
+
+  CoursesToUsers  CoursesToUsers[]
 }
 
 model SelfAssessment {
   score        Int
   dateTaken    DateTime
-  assessmentId String      @id @default(uuid())
+  assessmentId String   @id @default(uuid())
   userId       String
   isPractice   Boolean
-  user         User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }

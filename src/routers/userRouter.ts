@@ -18,7 +18,7 @@ userRouter.post("/signUp", async (req, res) => {
     await prisma.user.create({
       data: {
         email: email,
-        userId: uid,
+        id: uid,
         role: role.toUpperCase(),
       },
     });
@@ -41,13 +41,13 @@ userRouter.post("/", async (req, res) => {
 
     const user = await authenticateUser(token);
     const userData = await prisma.user.findUnique({
-      where: { userId: user.uid },
+      where: { id: user.uid },
     });
     if (userData == null) {
       await prisma.user.create({
         data: {
           email: user.email,
-          userId: user.uid,
+          id: user.uid,
           role: "PROFESSOR",
         },
       });
@@ -69,7 +69,7 @@ userRouter.put("/update-email/:userId", async (req, res) => {
     const { email } = req.body;
 
     const updatedUser = await prisma.user.update({
-      where: { userId: userId },
+      where: { id: userId },
       data: { email: email },
     });
 
@@ -84,45 +84,43 @@ userRouter.put("/update-email/:userId", async (req, res) => {
   }
 });
 
-userRouter.delete('/delete-user/:userId', async (req, res) => {
-    try {
-      const { userId } = req.params;
-  
-      const deletedUser = await prisma.user.delete({
-        where: { userId: userId },
-      });
-  
-      return res.status(200).json(deletedUser);
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({ error: 'Internal Server Error' });
-    }
-  });
+userRouter.delete("/delete-user/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
 
-userRouter.get('/:userId', async (req, res) => {
-    try {
-        const { userId } = req.params;
-        const user = await prisma.user.findUnique({ where: { userId: userId } });
-        if (!user) {
-            return res.status(404).json({ error: 'User not found' });
-        }
-        return res.status(200).json(user);
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: 'Internal Server Error' });
-    }
+    const deletedUser = await prisma.user.delete({
+      where: { id: userId },
+    });
+
+    return res.status(200).json(deletedUser);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
-userRouter.get('/', async (req, res) => {
-    try {
-        const users = await prisma.user.findMany();
-        return res.status(200).json(users);
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: 'Internal Server Error' });
+userRouter.get("/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
     }
+    return res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
-  
+userRouter.get("/", async (req, res) => {
+  try {
+    const users = await prisma.user.findMany();
+    return res.status(200).json(users);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 export default userRouter;

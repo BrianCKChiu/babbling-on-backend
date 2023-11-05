@@ -13,7 +13,7 @@
     "build": "npx tsc",
     "lint": "tsc",
     "prepare": "husky install",
-    "test": ""
+    "test": "npx jest"
   },
   "keywords": [],
   "author": "",

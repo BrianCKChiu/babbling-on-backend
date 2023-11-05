@@ -29,6 +29,28 @@ lessonRouter.post("/post", async (req, res) => {
   });
 
 
+lessonRouter.post("/getLesson", async (req, res) => {
+  const {lessonId} = req.body;
+
+ try {
+   const lesson = await prisma.lesson.findUnique({
+     where: {id: lessonId},
+      include: {
+      gestures: true
+      }
+    });
+    if (!lesson) {
+      res.status(404).json({ error: "Lesson not found" });
+    } else {
+      res.json(lesson);
+    }
+} catch (error) {
+  console.error("Error getting lesson:", error);
+ res.status(500).json({ error: "Internal Server Error" });
+}
+});
+
+
 //get lessons
 lessonRouter.get("/get", async (req, res) => {
     try {

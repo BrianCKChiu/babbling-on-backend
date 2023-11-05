@@ -36,3 +36,11 @@ Documentation for prisma can be found [here](https://www.prisma.io/docs/concepts
 Here is all available datatypes for prisma SQL: [here](https://www.prisma.io/docs/concepts/database-connectors/mysql#native-type-mapping-from-prisma-to-mysql)
 
 How Prisma Works [here](https://www.prisma.io/docs/concepts/components/prisma-client)
+
+# Testing
+
+All commits will jest tests. To manually run jest test, run `npx jest` in the root directory.
+
+### Creating Tests
+
+Put tests in the respective `__tests__` folder. For example, if you are testing a component, put the test in `src/components/__tests__`. If you are testing a route, put the test in `src/route/__tests__`.

@@ -31,13 +31,12 @@ app.use(bodyParser.json());
 app.use("/quiz", quizRouter);
 
 app.use("/customCourses", customCoursesRouter);
-app.use('/selfAssessment', selfAssessmentRouter);
-app.use('/user', userRouter);
-app.use('/ai', aiRouter);
+app.use("/selfAssessment", selfAssessmentRouter);
+app.use("/user", userRouter);
+app.use("/ai", aiRouter);
 app.use("/lesson", lessonRouter);
 
 app.use("/gesture", gestureRouter);
-
 
 app.listen(port, () => {
   console.log(`Babbling On API is listening at http://localhost:${port}`);

@@ -9,7 +9,11 @@
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "start": "npx tsc; node dist/src/index.js",
     "deploy": "glcoud app deploy",
-    "preview": "glcoud app browse"
+    "preview": "glcoud app browse",
+    "build": "npx tsc",
+    "lint": "tsc",
+    "prepare": "husky install",
+    "test": ""
   },
   "keywords": [],
   "author": "",
@@ -21,7 +25,8 @@
     "prisma": "^5.2.0",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "husky": "^8.0.0"
   },
   "dependencies": {
     "@prisma/client": "^5.2.0",

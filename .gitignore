@@ -130,3 +130,8 @@ dist
 .pnp.*
 venv
 .DS_Store
+
+.turbo
+build/**
+dist/**
+.next/**

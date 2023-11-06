@@ -44,3 +44,13 @@ All commits will jest tests. To manually run jest test, run `npx jest` in the ro
 ### Creating Tests
 
 Put tests in the respective `__tests__` folder. For example, if you are testing a component, put the test in `src/components/__tests__`. If you are testing a route, put the test in `src/route/__tests__`.
+
+### Firebase
+
+Firebase test environment is tested locally. It requires [Firebase CLI](https://firebase.google.com/docs/cli) to be installed. Run `npm install -g firebase-tools` and sign in to firebase using `firebase login`. Run `firebase emulators:start` to start the firebase emulator. The emulator UI will run on `localhost:4000`.
+
+| Emulator       | Port | URL                             |
+| -------------- | ---- | ------------------------------- |
+| Firestore      | 8088 | http://localhost:4000/firestore |
+| Authentication | 9099 | http://localhost:4000/auth      |
+| Storage        | 9199 | http://localhost:4000/storage   |

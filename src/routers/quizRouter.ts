@@ -29,7 +29,7 @@ quizRouter.post("/details", async (req, res) => {
     }
     return res.status(200).json(quizDetailData);
   } catch (error) {
-    return res.status(500).send(`Internal server error: ${error}`);
+    return res.status(500).json({ message: `Internal server error: ${error}` });
   }
 });
 

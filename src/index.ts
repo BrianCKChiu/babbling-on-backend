@@ -38,6 +38,6 @@ app.use("/lesson", lessonRouter);
 
 app.use("/gesture", gestureRouter);
 
-app.listen(port, () => {
+export const server = app.listen(port, () => {
   console.log(`Babbling On API is listening at http://localhost:${port}`);
 });

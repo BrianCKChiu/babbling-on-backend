@@ -108,7 +108,7 @@ model Lesson {
 model User {
   id              String           @id @default(uuid())
   email           String           @unique
-  role            String           @default("STUDENT")
+  role            String           @default("STUDENT") 
   coursesMade     Course[]         @relation("coursesMade")
   coursesTaken    Course[]
   selfAssessments SelfAssessment[]

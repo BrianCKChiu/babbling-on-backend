@@ -5,7 +5,6 @@ export async function authenticateUser(token: string): Promise<DecodedIdToken> {
   if (token == null) {
     throw new Error("Invalid Token");
   }
-
   const user = await authenticateToken(token);
   if (user == null) {
     throw new Error("Unauthorized");

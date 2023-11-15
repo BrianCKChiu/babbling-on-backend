@@ -41,24 +41,6 @@ model Topic {
   courses  Course[]
 }
 
-// model Course {
-//   id          String @id @default(uuid())
-//   name        String
-//   description String
-//   topicId     String
-//   topic       Topic  @relation(fields: [topicId], references: [id])
-//   ownerId     String
-//   owner       User   @relation(fields: [ownerId], references: [id]) // owner refers to user
-//   learners    User[]    @relation("coursesTaken", references: [id])
-//   learnesId   String
-
-//   lessons        Lesson[]
-//   CoursesToUsers CoursesToUsers[]
-
-//   @@index([topicId])
-//   @@index([ownerId])
-// }
-
 model Course {
   id          String @id @default(uuid())
   name        String
@@ -85,14 +67,6 @@ model CoursesToUsers {
   course   Course @relation(fields: [courseId], references: [id])
   courseId String
 }
-
-// model CoursesToUsers {
-//   id       Int      @id @default(autoincrement())
-//   user     User     @relation(fields: [userId], references: [id])
-//   userId   String   @map("user_id")
-//   course   Course   @relation(fields: [courseId], references: [id])
-//   courseId String
-// }
 
 model Lesson {
   id          String    @id @default(uuid())
@@ -126,21 +100,3 @@ model SelfAssessment {
 
   @@index([userId])
 }
-
-// model LessonToCourse {
-//   id        String   @id @default(uuid())
-//   courseId  String
-//   course    Course   @relation(fields: [courseId], references: [id])
-//   lessonId  String
-//   lesson    Lesson   @relation(fields: [lessonId], references: [id])
-// }
-
-// model GestureToLesson {
-//   id        String  @id @default(uuid())
-//   lessonId  String
-//   lesson    Lesson  @relation(fields: [lessonId], references: [id])
-//   gestureId String
-//   gesture   Gesture @relation(fields: [gestureId], references: [id])
-
-//   // @index([lessonId])
-// }

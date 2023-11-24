@@ -7,6 +7,7 @@ import selfAssessmentRouter from "./routers/selfAssessmentRouter";
 import userRouter from "./routers/userRouter";
 import lessonRouter from "./routers/LessonRouter";
 import gestureRouter from "./routers/GestureRouter";
+import imageRouter from "./routers/imageRouter";
 import cors from "cors";
 
 const app = express();
@@ -35,7 +36,7 @@ app.use("/selfAssessment", selfAssessmentRouter);
 app.use("/user", userRouter);
 app.use("/ai", aiRouter);
 app.use("/lesson", lessonRouter);
-
+app.use("/image", imageRouter);
 app.use("/gesture", gestureRouter);
 
 export const server = app.listen(port, () => {

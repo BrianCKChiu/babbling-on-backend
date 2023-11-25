@@ -19,16 +19,21 @@ quizRouter.post("/details", async (req, res) => {
     await authenticateUser(token);
 
     if (quizId == null) {
-      return res.status(400).send("Bad request");
+      throw new HttpError(404, "Bad request: No quiz id was provided");
     }
     const quizDetailDoc = await db.collection("quizData").doc(quizId).get();
 
     const quizDetailData = quizDetailDoc.data();
     if (quizDetailData == null) {
-      return res.status(404).send("Quiz not found");
+      throw new HttpError(404, "Quiz not found");
     }
+
     return res.status(200).json(quizDetailData);
   } catch (error) {
+    if (error instanceof HttpError) {
+      error.log();
+      return res.status(error.statusCode).json({ message: error.message });
+    }
     return res.status(500).json({ message: `Internal server error: ${error}` });
   }
 });
@@ -51,19 +56,23 @@ quizRouter.post("/create", async (req, res) => {
       options,
     }: { token: string; topic: string; options: QuizOptions } = req.body;
     if (token == null) {
-      return res.status(400).send("Invalid Token");
+      throw new HttpError(400, "Bad request: No quiz id was provided");
     }
     // authenticate user
     const user = await authenticateUser(token);
     if (user == null) {
-      return res.status(401).send("Unauthorized");
+      throw new HttpError(401, "Unauthorized");
     }
     const quizData = await QuizGenerator.create(user.uid, topic);
 
     console.log(quizData);
     return res.status(200).json(quizData);
   } catch (error) {
-    return res.status(500).send(`Internal server error: ${error}`);
+    if (error instanceof HttpError) {
+      error.log();
+      return res.status(error.statusCode).json({ message: error.message });
+    }
+    return res.status(500).json({ message: `Internal server error: ${error}` });
   }
 });
 
@@ -81,12 +90,12 @@ quizRouter.post("/submitAnswer", async (req, res) => {
     const { token, quizId, results } = req.body;
     console.log(req.body);
     if (token == null || quizId == null || results == null) {
-      return res.status(400).send("Bad request");
+      throw new HttpError(400, "Bad request: No quiz id was provided");
     }
     // authenticate user
     const user = await await authenticateUser(token);
     if (user == null) {
-      return res.status(401).send("Unauthorized");
+      throw new HttpError(400, "Unauthorized");
     }
     console.log(quizId);
     // verify quizId belongs to userId
@@ -110,7 +119,11 @@ quizRouter.post("/submitAnswer", async (req, res) => {
 
     return res.status(200);
   } catch (error) {
-    return res.status(500).send(`Internal server error: ${error}`);
+    if (error instanceof HttpError) {
+      error.log();
+      return res.status(error.statusCode).json({ message: error.message });
+    }
+    return res.status(500).json({ message: `Internal server error: ${error}` });
   }
 });
 

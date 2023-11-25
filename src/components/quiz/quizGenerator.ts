@@ -7,7 +7,8 @@ import {
   QuestionType,
 } from "./question";
 import { Quiz, QuizOptions, QuizStatus } from "./quiz";
-import { prisma } from "../../database/prisma";
+import prisma from "../../database/prisma";
+import { getGestureMediaRef } from "../../utils/getMediaRef";
 
 export class QuizGenerator {
   /**
@@ -85,9 +86,8 @@ export class QuizGenerator {
         .sort(() => 0.5 - Math.random())
         .slice(0, 3)
         .map((g) => g.phrase);
-      const mediaAnswer = await prisma.gestureMedia.findFirst({
-        where: { gestureId: gesture.id },
-      });
+
+      const mediaAnswer = await getGestureMediaRef(gesture.id);
 
       return {
         id: generateUuid62(),
@@ -105,8 +105,6 @@ export class QuizGenerator {
           gestureId: { in: gestures.map((g) => g.id) },
         },
       });
-      console.log(media);
-      // creating answers for matching question
 
       const options: { answer: string; mediaRef: string }[] = [];
 

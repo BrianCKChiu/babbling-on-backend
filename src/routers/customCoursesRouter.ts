@@ -1,5 +1,5 @@
 import express from "express";
-import { prisma } from "../database/prisma";
+import prisma from "../database/prisma";
 import { Request, Response } from "express";
 import { authenticateUser } from "../auth/authenticateUser";
 const customCoursesRouter = express.Router();
@@ -11,40 +11,34 @@ const customCoursesRouter = express.Router();
  * @returns {Response}
  */
 
-
 // HOMEPAGE CUSTOM COURSES ROUTE
 customCoursesRouter.post("/getMyCourses", async (req, res) => {
   try {
     const { token } = req.body;
     console.log(req.body);
-    const user = await authenticateUser(token);    // USER IS AUTHENTICATED
+    const user = await authenticateUser(token); // USER IS AUTHENTICATED
 
-  if(!user) {
-    // USER IS NOT AUTHENTICATED
-   return res.status(401).json({error: "Not authenticated"});
-  }
-
-  // Get all courses and filter into user's courses vs others
-  const courses = await prisma.course.findMany({
-    where: {
-      OR: [
-        { ownerId: user.uid },
-        { ownerId: { not: user.uid }},
-      ]
+    if (!user) {
+      // USER IS NOT AUTHENTICATED
+      return res.status(401).json({ error: "Not authenticated" });
     }
-  });
 
-  const myCourses = courses.filter(c => c.ownerId === user.uid);
-  const otherCourses = courses.filter(c => c.ownerId !== user.uid);
+    // Get all courses and filter into user's courses vs others
+    const courses = await prisma.course.findMany({
+      where: {
+        OR: [{ ownerId: user.uid }, { ownerId: { not: user.uid } }],
+      },
+    });
 
-  // RETURN THE USER'S COURSES AND OTHERS IN THE JSON
-  res.json({myCourses, otherCourses});
+    const myCourses = courses.filter((c) => c.ownerId === user.uid);
+    const otherCourses = courses.filter((c) => c.ownerId !== user.uid);
 
- } catch (error) {
-  res.status(500).json({error: "Internal server error"});
- }
+    // RETURN THE USER'S COURSES AND OTHERS IN THE JSON
+    res.json({ myCourses, otherCourses });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
-
 
 // get courses made by the user
 customCoursesRouter.post("/myCourses", async (req: Request, res: Response) => {
@@ -66,52 +60,54 @@ customCoursesRouter.post("/myCourses", async (req: Request, res: Response) => {
 });
 
 // get courses taken by the user
-customCoursesRouter.post("/takenCourses", async (req: Request, res: Response) => {
-  try{
-    const { token, userId } = req.body;
+customCoursesRouter.post(
+  "/takenCourses",
+  async (req: Request, res: Response) => {
+    try {
+      const { token, userId } = req.body;
 
-    const isValidUser = await authenticateUser(token);
+      const isValidUser = await authenticateUser(token);
 
-    if (!isValidUser) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
-
-    // query for the user with that id and include the coursesTaken relation
-    const userWithCourses = await prisma.user.findUnique({
-      where: { id: userId },
-      include: {
-        coursesTaken: true
+      if (!isValidUser) {
+        return res.status(401).json({ error: "Unauthorized" });
       }
-    });
 
-    // send the coursesTaken back in the response
-    res.json(userWithCourses.coursesTaken);
-    
-  }catch(error){
-    res.status(500).send(`Internal server error: ${error}`);
+      // query for the user with that id and include the coursesTaken relation
+      const userWithCourses = await prisma.user.findUnique({
+        where: { id: userId },
+        include: {
+          coursesTaken: true,
+        },
+      });
+
+      // send the coursesTaken back in the response
+      res.json(userWithCourses.coursesTaken);
+    } catch (error) {
+      res.status(500).send(`Internal server error: ${error}`);
+    }
   }
-});
+);
 
 // get an invidual course
 customCoursesRouter.post("/getCourse", async (req: Request, res: Response) => {
-  const {courseId} = req.body;
+  const { courseId } = req.body;
 
- try {
-   const course = await prisma.course.findUnique({
-     where: {id: courseId},
+  try {
+    const course = await prisma.course.findUnique({
+      where: { id: courseId },
       include: {
-        lessons: true
-      }
+        lessons: true,
+      },
     });
     if (!course) {
       res.status(404).json({ error: "Course not found" });
     } else {
       res.json(course);
     }
-} catch (error) {
-  console.error("Error getting course:", error);
- res.status(500).json({ error: "Internal Server Error" });
-}
+  } catch (error) {
+    console.error("Error getting course:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 /**
@@ -202,7 +198,7 @@ customCoursesRouter.get("/get", async (req: Request, res: Response) => {
   try {
     const course = await prisma.course.findMany({
       include: {
-      lessons: true,
+        lessons: true,
       },
     });
 

@@ -1,5 +1,6 @@
 import { DecodedIdToken } from "firebase-admin/lib/auth/token-verifier";
 import admin from "firebase-admin";
+import { HttpError } from "../components/errors/authenticationError";
 
 export async function authenticateUser(token: string): Promise<DecodedIdToken> {
   if (token == null) {

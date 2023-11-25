@@ -20,7 +20,6 @@ const options: cors.CorsOptions = {
 app.use(cors(options));
 
 app.get("/health", (_, res) => {
-  console.log("as");
   res.send("OK");
 });
 app.post("/", (_, res) => {

@@ -3,7 +3,7 @@ import { Quiz, QuizOptions, QuizStatus } from "../components/quiz/quiz";
 import express from "express";
 import { db } from "../database/firebase";
 import { authenticateUser } from "../auth/authenticateUser";
-
+import { HttpError } from "../components/errors/authenticationError";
 const quizRouter = express.Router();
 
 /**
@@ -25,11 +25,11 @@ quizRouter.post("/details", async (req, res) => {
 
     const quizDetailData = quizDetailDoc.data();
     if (quizDetailData == null) {
-      throw new HttpError(404, "Quiz not found");
+      throw new HttpError(404, "Quiz details not found");
     }
 
     return res.status(200).json(quizDetailData);
-  } catch (error) {
+  } catch (error: unknown) {
     if (error instanceof HttpError) {
       error.log();
       return res.status(error.statusCode).json({ message: error.message });
@@ -65,7 +65,6 @@ quizRouter.post("/create", async (req, res) => {
     }
     const quizData = await QuizGenerator.create(user.uid, topic);
 
-    console.log(quizData);
     return res.status(200).json(quizData);
   } catch (error) {
     if (error instanceof HttpError) {

@@ -19,12 +19,13 @@ describe("Quiz Router Testing", () => {
     topic: "abc",
   };
   let token = "";
+
   beforeAll(async () => {
+    // create user
     await auth.createUser(testUser);
+
     // insert test data
-
     await db.collection("quizData").doc(quizDetailId).set(testQuizData);
-
     token = await fireBaseSignInWithEmail(testUser.email, testUser.password);
   });
 
@@ -36,11 +37,27 @@ describe("Quiz Router Testing", () => {
     server.close();
   });
 
-  it("test retrieving quiz details", async () => {
-    const response = await request(server).post("/quiz/details").send({
-      token: token,
-      quizId: "testQuizData",
+  describe("Test endpoint: '/quiz/details'", () => {
+    const ENDPOINT = "/quiz/details";
+
+    it("retrieving quiz details returns the correct data", async () => {
+      const response = await request(server).post(ENDPOINT).send({
+        token: token,
+        quizId: "testQuizData",
+      });
+      expect(response.body).toStrictEqual(testQuizData);
+      expect(response.statusCode).toBe(200);
     });
-    expect(response.body).toStrictEqual(testQuizData);
+
+    it("the response when no quiz details was found", async () => {
+      const response = await request(server).post(ENDPOINT).send({
+        token: token,
+        quizId: "1234",
+      });
+      expect(response.statusCode).toBe(404);
+      expect(response.body).toStrictEqual({
+        message: "Quiz details not found",
+      });
+    });
   });
 });

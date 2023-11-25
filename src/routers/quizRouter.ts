@@ -49,7 +49,6 @@ quizRouter.post("/details", async (req, res) => {
  */
 quizRouter.post("/create", async (req, res) => {
   try {
-    console.log(req.body);
     const {
       token,
       topic,
@@ -87,7 +86,6 @@ quizRouter.post("/create", async (req, res) => {
 quizRouter.post("/submitAnswer", async (req, res) => {
   try {
     const { token, quizId, results } = req.body;
-    console.log(req.body);
     if (token == null || quizId == null || results == null) {
       throw new HttpError(400, "Bad request: No quiz id was provided");
     }
@@ -96,12 +94,10 @@ quizRouter.post("/submitAnswer", async (req, res) => {
     if (user == null) {
       throw new HttpError(400, "Unauthorized");
     }
-    console.log(quizId);
     // verify quizId belongs to userId
     const quizDoc = await db.collection("quizzes").doc(quizId).get();
 
     const quizData = quizDoc.data();
-    console.log(quizData);
     if (quizData == null) {
       return res.status(401).send(`Quiz not found: ${quizId}`);
     }

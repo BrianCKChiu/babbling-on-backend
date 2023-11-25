@@ -8,6 +8,16 @@ const testUser = {
   email: "test@gmail.com",
   password: "Password123",
 };
+beforeAll(async () => {
+  // create user
+  await auth.createUser(testUser);
+});
+
+afterAll(async () => {
+  // firebase clean up
+  await auth.deleteUser(testUser.uid);
+  server.close();
+});
 
 describe("Quiz Router Testing", () => {
   const quizDetailId = "testQuizData";
@@ -21,9 +31,6 @@ describe("Quiz Router Testing", () => {
   let token = "";
 
   beforeAll(async () => {
-    // create user
-    await auth.createUser(testUser);
-
     // insert test data
     await db.collection("quizData").doc(quizDetailId).set(testQuizData);
     token = await fireBaseSignInWithEmail(testUser.email, testUser.password);
@@ -31,10 +38,7 @@ describe("Quiz Router Testing", () => {
 
   afterAll(async () => {
     // firebase clean up
-    await auth.deleteUser(testUser.uid);
     await db.collection("quizData").doc(quizDetailId).delete();
-
-    server.close();
   });
 
   describe("Test endpoint: '/quiz/details'", () => {

@@ -9,6 +9,7 @@ import {
 import { Quiz, QuizOptions, QuizStatus } from "./quiz";
 import prisma from "../../database/prisma";
 import { getGestureMediaRef } from "../../utils/getMediaRef";
+import { HttpError } from "../errors/authenticationError";
 
 export class QuizGenerator {
   /**
@@ -25,6 +26,12 @@ export class QuizGenerator {
     options: QuizOptions = { length: 5 }
   ): Promise<Quiz | undefined> {
     const questions = [];
+    if (options.length <= 0) {
+      throw new HttpError(
+        500,
+        "Quiz length cannot be less than or equal than 0"
+      );
+    }
     try {
       for (let i = 0; i < options.length; i++) {
         // generate random question type
@@ -71,6 +78,11 @@ export class QuizGenerator {
     const gestureList = await prisma.gesture.findMany({
       where: { topicId: topic, verified: true },
     });
+    if (gestureList.length === 0) {
+      throw new HttpError(500, "No Gestures found with topicId: " + topic);
+    } else if (gestureList.length < 5) {
+      throw new HttpError(500, "Not enough gestures to generate question");
+    }
 
     const existingQuestionIds = existingQuestions.map((q) => q.id);
     if (type === "mcq") {

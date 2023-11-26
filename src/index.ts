@@ -11,7 +11,7 @@ import cors from "cors";
 
 const app = express();
 
-const port = 8080;
+const port = process.env.PORT || 8080;
 const allowedOrigins = ["http://localhost:3001", "http://localhost:8081"];
 
 const options: cors.CorsOptions = {

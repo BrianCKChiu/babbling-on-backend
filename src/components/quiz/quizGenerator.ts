@@ -5,11 +5,11 @@ import {
   QuestionMatching,
   QuestionMcq,
   QuestionType,
-} from "./question";
-import { Quiz, QuizOptions, QuizStatus } from "./quiz";
+} from "../../types/quiz/question";
+import { Quiz, QuizOptions, QuizStatus } from "../../types/quiz/quiz";
 import prisma from "../../database/prisma";
 import { getGestureMediaRef } from "../../utils/getMediaRef";
-import { HttpError } from "../errors/authenticationError";
+import { HttpError } from "../../types/errors/authenticationError";
 
 export class QuizGenerator {
   /**

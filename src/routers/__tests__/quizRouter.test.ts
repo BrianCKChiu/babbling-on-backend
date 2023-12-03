@@ -2,6 +2,7 @@ import { auth, db } from "../../database/firebase";
 import request from "supertest";
 import { server } from "../..";
 import { fireBaseSignInWithEmail } from "../../database/utils";
+import { Quiz } from "../../components/quiz/quiz";
 
 const testUser = {
   uid: "123",
@@ -44,7 +45,7 @@ describe("Quiz Router Testing", () => {
   describe("Test endpoint: '/quiz/details'", () => {
     const ENDPOINT = "/quiz/details";
 
-    it("retrieving quiz details returns the correct data", async () => {
+    it("Retrieves quiz details returns the correct data", async () => {
       const response = await request(server).post(ENDPOINT).send({
         token: token,
         quizId: "testQuizData",
@@ -53,7 +54,7 @@ describe("Quiz Router Testing", () => {
       expect(response.statusCode).toBe(200);
     });
 
-    it("the response when no quiz details was found", async () => {
+    it("Returns a 404 error when no quiz details was found", async () => {
       const response = await request(server).post(ENDPOINT).send({
         token: token,
         quizId: "1234",
@@ -61,6 +62,37 @@ describe("Quiz Router Testing", () => {
       expect(response.statusCode).toBe(404);
       expect(response.body).toStrictEqual({
         message: "Quiz details not found",
+      });
+    });
+  });
+
+  describe("Test endpoint: '/quiz/create'", () => {
+    const ENDPOINT = "/quiz/create";
+
+    it("checks quiz data returned is valid", async () => {
+      const response = await request(server).post(ENDPOINT).send({
+        token: token,
+        topic: "1",
+      });
+      expect(response.statusCode).toBe(200);
+
+      const quizData: Quiz = response.body;
+      expect(quizData.quizResults.length).toBe(0);
+      expect(quizData.questions.length).toBe(5);
+      expect(quizData.status).toBe("incomplete");
+    });
+
+    it("returns 400 error when quiz length is less than 5", async () => {
+      const response = await request(server)
+        .post(ENDPOINT)
+        .send({
+          token: token,
+          topic: "1",
+          options: { length: 2 },
+        });
+      expect(response.statusCode).toBe(400);
+      expect(response.body).toStrictEqual({
+        message: "Quiz length cannot be less than or equal than 0",
       });
     });
   });

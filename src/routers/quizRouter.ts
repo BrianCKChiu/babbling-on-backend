@@ -55,7 +55,7 @@ quizRouter.post("/create", async (req, res) => {
       options,
     }: { token: string; topic: string; options: QuizOptions } = req.body;
     if (token == null) {
-      throw new HttpError(400, "Bad request: No quiz id was provided");
+      throw new HttpError(400, "Bad request: No token was provided");
     }
     // authenticate user
     const user = await authenticateUser(token);

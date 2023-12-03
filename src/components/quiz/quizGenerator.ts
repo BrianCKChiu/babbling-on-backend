@@ -28,7 +28,7 @@ export class QuizGenerator {
     const questions = [];
     if (options.length <= 0) {
       throw new HttpError(
-        500,
+        400,
         "Quiz length cannot be less than or equal than 0"
       );
     }
@@ -56,9 +56,8 @@ export class QuizGenerator {
       const ref = await db.collection("quizzes").add(quizData);
       return { id: ref.id, ...quizData };
     } catch (e) {
-      console.log(e);
+      throw new HttpError(500, "Internal Server Error: " + e);
     }
-    return undefined;
   }
 
   /**

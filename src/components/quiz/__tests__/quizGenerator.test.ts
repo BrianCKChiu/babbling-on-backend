@@ -1,6 +1,3 @@
-import { auth } from "../../../database/firebase";
-import { HttpError } from "../../errors/authenticationError";
-import { QuestionMcq } from "../question";
 import { QuizGenerator } from "../quizGenerator";
 
 const testUser = {

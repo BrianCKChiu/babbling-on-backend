@@ -37,10 +37,20 @@ gestureRouter.post("/post", async (req, res) => {
 
 gestureRouter.post("/getGesture", async (req, res) => {
   const {gestureId} = req.body;
+  const { token } = req.body;
 
  try {
+  const user = await authenticateUser(token);
+
+    if (user == null) {
+      return res.status(401).json({ error: "Not Authenticated" });
+    }
+
    const gesture = await prisma.gesture.findUnique({
      where: {id: gestureId},
+     include: {
+      gestureMedia: true,
+     }
     });
     if (!gesture) {
       res.status(404).json({ error: "Gesture not found" });

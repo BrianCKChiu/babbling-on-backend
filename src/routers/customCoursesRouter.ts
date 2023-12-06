@@ -6,11 +6,10 @@ const customCoursesRouter = express.Router();
 
 /**
  * Get all courses created by the user
- * @param {string} token user's token
+ * @param {string} token user's token 
  * @param {string} courseId
  * @returns {Response}
  */
-
 
 // HOMEPAGE CUSTOM COURSES ROUTE 
 customCoursesRouter.post("/getMyCourses", async (req, res) => {
@@ -31,18 +30,21 @@ customCoursesRouter.post("/getMyCourses", async (req, res) => {
 
   // Get all courses and filter into user's courses vs other... custom courses
   const courses = await prisma.course.findMany({
+    // take : 3,
     where: {
       OR: [
         { owner: {role: "TUTOR"} }, 
         { owner: {role: "PROFESSOR"} },
+        { owner: {role: "ADMIN"} },
       ] 
-    }
+    },
+    include: { lessons: true },
   });  
 
   console.log("courses in backend", courses);
   console.log("user", user);
 
-  // check if the use is a role tutor or prof
+  // check if the user is a role tutor or prof
   if(userDB.role !== "TUTOR" && userDB.role !== "PROFESSOR") {
     // ok if this DO NOT LOAD "My Courses tab"
 
@@ -66,6 +68,57 @@ customCoursesRouter.post("/getMyCourses", async (req, res) => {
  }
 });
 
+// HOMEPAGE ADMIN COURSES ROUTE 
+customCoursesRouter.post("/getCourses", async (req, res) => {
+
+  try {
+    const { token } = req.body;
+    console.log(req.body);
+    const user = await authenticateUser(token);    
+
+    const userDB = await prisma.user.findUnique({
+      where : {email : user.email}
+    })
+
+  if(!userDB) { 
+    // USER IS NOT AUTHENTICATED
+   return res.status(401).json({error: "Not authenticated"});
+  }
+
+  // GET ALL EXPLORE COURSES
+  const exploreCourses = await prisma.course.findMany({
+    where: {
+      OR: [
+        { owner: {role: "ADMIN"} },
+      ] 
+    },
+    take : 3,
+    include: {
+      lessons: true,
+    },
+  });  
+
+  console.log("explore Courses", exploreCourses);
+  console.log("user", user);
+
+  // GET ALL FEATURED COURSES 
+    const featuredCourses = await prisma.course.findMany({
+      take: 3,
+      include: {
+        lessons: true,
+      },
+    });
+
+  console.log("explore Courses", exploreCourses);
+  console.log("featured Courses", featuredCourses);
+  
+  // res.json({myCourses, otherCourses});
+  return res.status(200).json({exploreCourses, featuredCourses});
+
+ } catch (error) {
+  res.status(500).json({error: "Internal server error"});
+ }
+});
 
 // get courses made by the user
 customCoursesRouter.post("/myCourses", async (req: Request, res: Response) => {

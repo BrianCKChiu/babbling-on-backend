@@ -40,9 +40,9 @@ describe('SelfAssessment Router Tests', () => {
 
   afterAll(done => {
     server.close(() => {
-      console.log("Closed");
       done();
     });
+    console.log("Closed");
   });
 
   it('should start an assessment', async () => {

@@ -51,6 +51,10 @@ Firebase test environment is tested locally. It requires [Firebase CLI](https://
 
 | Emulator       | Port | URL                             |
 | -------------- | ---- | ------------------------------- |
-| Firestore      | 8088 | http://localhost:4000/firestore |
+| Firestore      | 8089 | http://localhost:4000/firestore |
 | Authentication | 9099 | http://localhost:4000/auth      |
 | Storage        | 9199 | http://localhost:4000/storage   |
+
+### Prisma
+
+Prisma DB testing uses a singleton method to mock the Prisma DB. [Read More](https://www.prisma.io/docs/guides/testing/unit-testing#example-unit-tests).

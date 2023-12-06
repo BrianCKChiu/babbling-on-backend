@@ -1,5 +1,5 @@
 import express from "express";
-import { prisma } from "../database/prisma";
+import prisma from "../database/prisma";
 import { authenticateUser } from "../auth/authenticateUser";
 
 const gestureRouter = express.Router();
@@ -36,21 +36,21 @@ gestureRouter.post("/post", async (req, res) => {
 });
 
 gestureRouter.post("/getGesture", async (req, res) => {
-  const {gestureId} = req.body;
+  const { gestureId } = req.body;
 
- try {
-   const gesture = await prisma.gesture.findUnique({
-     where: {id: gestureId},
+  try {
+    const gesture = await prisma.gesture.findUnique({
+      where: { id: gestureId },
     });
     if (!gesture) {
       res.status(404).json({ error: "Gesture not found" });
     } else {
       res.json(gesture);
     }
-} catch (error) {
-  console.error("Error getting gesture:", error);
- res.status(500).json({ error: "Internal Server Error" });
-}
+  } catch (error) {
+    console.error("Error getting gesture:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 //get signs

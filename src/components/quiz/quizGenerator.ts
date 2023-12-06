@@ -5,9 +5,11 @@ import {
   QuestionMatching,
   QuestionMcq,
   QuestionType,
-} from "./question";
-import { Quiz, QuizOptions, QuizStatus } from "./quiz";
-import { prisma } from "../../database/prisma";
+} from "../../types/quiz/question";
+import { Quiz, QuizOptions, QuizStatus } from "../../types/quiz/quiz";
+import prisma from "../../database/prisma";
+import { getGestureMediaRef } from "../../utils/getMediaRef";
+import { HttpError } from "../../types/errors/authenticationError";
 
 export class QuizGenerator {
   /**
@@ -24,6 +26,12 @@ export class QuizGenerator {
     options: QuizOptions = { length: 5 }
   ): Promise<Quiz | undefined> {
     const questions = [];
+    if (options.length <= 0) {
+      throw new HttpError(
+        400,
+        "Quiz length cannot be less than or equal than 0"
+      );
+    }
     try {
       for (let i = 0; i < options.length; i++) {
         // generate random question type
@@ -48,9 +56,8 @@ export class QuizGenerator {
       const ref = await db.collection("quizzes").add(quizData);
       return { id: ref.id, ...quizData };
     } catch (e) {
-      console.log(e);
+      throw new HttpError(500, "Internal Server Error: " + e);
     }
-    return undefined;
   }
 
   /**
@@ -70,6 +77,11 @@ export class QuizGenerator {
     const gestureList = await prisma.gesture.findMany({
       where: { topicId: topic, verified: true },
     });
+    if (gestureList.length === 0) {
+      throw new HttpError(500, "No Gestures found with topicId: " + topic);
+    } else if (gestureList.length < 5) {
+      throw new HttpError(500, "Not enough gestures to generate question");
+    }
 
     const existingQuestionIds = existingQuestions.map((q) => q.id);
     if (type === "mcq") {
@@ -85,9 +97,8 @@ export class QuizGenerator {
         .sort(() => 0.5 - Math.random())
         .slice(0, 3)
         .map((g) => g.phrase);
-      const mediaAnswer = await prisma.gestureMedia.findFirst({
-        where: { gestureId: gesture.id },
-      });
+
+      const mediaAnswer = await getGestureMediaRef(gesture.id);
 
       return {
         id: generateUuid62(),
@@ -105,8 +116,6 @@ export class QuizGenerator {
           gestureId: { in: gestures.map((g) => g.id) },
         },
       });
-      console.log(media);
-      // creating answers for matching question
 
       const options: { answer: string; mediaRef: string }[] = [];
 

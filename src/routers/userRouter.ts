@@ -1,5 +1,5 @@
 import { authenticateUser } from "../auth/authenticateUser";
-import { prisma } from "../database/prisma";
+import prisma from "../database/prisma";
 import express from "express";
 
 const userRouter = express.Router();

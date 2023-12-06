@@ -9,21 +9,40 @@
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "start": "npx tsc; node dist/src/index.js",
     "deploy": "glcoud app deploy",
-    "preview": "glcoud app browse"
+    "preview": "glcoud app browse",
+    "build": "npx tsc",
+    "lint": "tsc",
+    "prepare": "husky install",
+    "test": "npx tsc && npx jest"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "^7.23.3",
+    "@babel/preset-env": "^7.23.3",
+    "@babel/preset-typescript": "^7.23.3",
+    "@jest/globals": "^29.7.0",
     "@types/cors": "^2.8.14",
     "@types/express": "^4.17.1",
+    "@types/jest": "^29.5.10",
     "@types/node": "^20.8.4",
+    "@types/supertest": "^2.0.15",
+    "babel-jest": "^29.7.0",
+    "husky": "^8.0.0",
+    "jest": "^29.7.0",
+    "jest-mock-extended": "^3.0.5",
+    "jest-mock-axios": "^4.7.3",
     "prisma": "^5.2.0",
+    "supertest": "^6.3.3",
+    "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@firebase/rules-unit-testing": "^3.0.1",
+    "@google-cloud/storage": "^7.6.0",
     "@prisma/client": "^5.2.0",
     "axios": "^1.5.1",
     "base-x": "^4.0.0",
@@ -33,6 +52,7 @@
     "express": "^4.17.1",
     "firebase": "^10.3.1",
     "firebase-admin": "^11.10.1",
-    "lib0": "^0.2.84"
+    "lib0": "^0.2.84",
+    "supertest": "^6.3.3"
   }
 }

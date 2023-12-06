@@ -1,5 +1,5 @@
 import express from "express";
-import { prisma } from "../database/prisma";
+import prisma from "../database/prisma";
 import { authenticateUser } from "../auth/authenticateUser";
 
 const gestureRouter = express.Router();
@@ -57,10 +57,10 @@ gestureRouter.post("/getGesture", async (req, res) => {
     } else {
       res.json(gesture);
     }
-} catch (error) {
-  console.error("Error getting gesture:", error);
- res.status(500).json({ error: "Internal Server Error" });
-}
+  } catch (error) {
+    console.error("Error getting gesture:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 //get signs

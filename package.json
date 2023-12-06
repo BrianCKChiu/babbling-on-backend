@@ -13,7 +13,7 @@
     "build": "npx tsc",
     "lint": "tsc",
     "prepare": "husky install",
-    "test": "npx jest"
+    "test": "npx jest --runInBand"
   },
   "keywords": [],
   "author": "",

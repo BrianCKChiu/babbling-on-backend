@@ -25,7 +25,6 @@ jest.mock('@prisma/client', () => {
               isPractice: true,
               dateTaken: new Date('2023-01-02'),
             },
-            // Add more mock assessments as needed
           ]),
           findUnique: jest.fn().mockResolvedValue({ id: someAssessmentId }),
           delete: jest.fn().mockResolvedValue({ id: someAssessmentId }),
@@ -39,8 +38,11 @@ describe('SelfAssessment Router Tests', () => {
   beforeAll(() => {
   });
 
-  afterAll(() => {
-    server.close();
+  afterAll(done => {
+    server.close(() => {
+      done();
+    });
+    console.log("Closed");
   });
 
   it('should start an assessment', async () => {
@@ -108,5 +110,5 @@ describe('SelfAssessment Router Tests', () => {
 
     expect(response.statusCode).toEqual(200);
   });
-
 });
+  

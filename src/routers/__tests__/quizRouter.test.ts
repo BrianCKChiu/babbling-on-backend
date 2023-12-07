@@ -2,7 +2,7 @@ import { auth, db } from "../../database/firebase";
 import request from "supertest";
 import { server } from "../..";
 import { fireBaseSignInWithEmail } from "../../database/utils";
-import { Quiz } from "../../components/quiz/quiz";
+import { Quiz } from "../../types/quiz/quiz";
 
 const testUser = {
   uid: "123",

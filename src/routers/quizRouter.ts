@@ -1,5 +1,5 @@
 import { QuizGenerator } from "../components/quiz/quizGenerator";
-import { Quiz, QuizOptions, QuizStatus } from "../components/quiz/quiz";
+import { QuizOptions,QuizStatus } from "../types/quiz/quiz";
 import express from "express";
 import { db } from "../database/firebase";
 import { authenticateUser } from "../auth/authenticateUser";

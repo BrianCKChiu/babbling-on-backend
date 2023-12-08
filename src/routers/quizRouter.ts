@@ -15,7 +15,6 @@ const quizRouter = express.Router();
  */
 quizRouter.post("/details", async (req, res) => {
   try {
-    console.log("as");
     const { quizId, token } = req.body;
     await authenticateUser(token);
 

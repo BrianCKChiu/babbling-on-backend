@@ -15,10 +15,8 @@ beforeAll(async () => {
 });
 
 afterAll(() => {
-  // Close the server (synchronously if possible)
   server.close();
 
-  // Handle Firebase cleanup asynchronously
   return auth.deleteUser(testUser.uid);
 });
 

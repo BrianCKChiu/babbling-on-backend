@@ -14,7 +14,11 @@ import cors from "cors";
 const app = express();
 
 const port = process.env.PORT || 8080;
-const allowedOrigins = ["http://localhost:3001", "http://localhost:8081"];
+const allowedOrigins = [
+  "http://localhost:3001",
+  "http://localhost:8081",
+  "https://babbling-on-web-app-brianchiu.vercel.app",
+];
 
 const options: cors.CorsOptions = {
   origin: allowedOrigins,

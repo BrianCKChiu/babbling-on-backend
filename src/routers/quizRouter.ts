@@ -1,9 +1,9 @@
 import { QuizGenerator } from "../components/quiz/quizGenerator";
-import { QuizOptions,QuizStatus } from "../types/quiz/quiz";
+import { QuizOptions, QuizStatus } from "../types/quiz/quiz";
 import express from "express";
 import { db } from "../database/firebase";
 import { authenticateUser } from "../auth/authenticateUser";
-import { HttpError } from "../components/errors/authenticationError";
+import { HttpError } from "../types/errors/authenticationError";
 const quizRouter = express.Router();
 
 /**
@@ -112,7 +112,7 @@ quizRouter.post("/submitAnswer", async (req, res) => {
       timeCompleted: Date.now(),
     });
 
-    return res.status(200);
+    return res.status(200).json({ quiz: quizDoc.data() });
   } catch (error) {
     if (error instanceof HttpError) {
       error.log();

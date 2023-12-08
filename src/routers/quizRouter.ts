@@ -15,6 +15,7 @@ const quizRouter = express.Router();
  */
 quizRouter.post("/details", async (req, res) => {
   try {
+    console.log("as");
     const { quizId, token } = req.body;
     await authenticateUser(token);
 
@@ -112,7 +113,7 @@ quizRouter.post("/submitAnswer", async (req, res) => {
       timeCompleted: Date.now(),
     });
 
-    return res.status(200);
+    return res.status(200).json({ quiz: quizDoc.data() });
   } catch (error) {
     if (error instanceof HttpError) {
       error.log();

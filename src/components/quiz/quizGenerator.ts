@@ -26,7 +26,7 @@ export class QuizGenerator {
     options: QuizOptions = { quizLength: 5, type: "hybrid" }
   ): Promise<Quiz | undefined> {
     const questions = [];
-    if (options.quizLength <= 0) {
+    if (options.quizLength <= 2) {
       throw new HttpError(
         400,
         "Quiz length cannot be less than or equal than 0"

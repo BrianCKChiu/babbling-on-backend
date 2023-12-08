@@ -23,19 +23,24 @@ export class QuizGenerator {
   static async create(
     userId: string,
     topic: string,
-    options: QuizOptions = { length: 5 }
+    options: QuizOptions = { quizLength: 5, type: "hybrid" }
   ): Promise<Quiz | undefined> {
     const questions = [];
-    if (options.length <= 0) {
+    if (options.quizLength <= 0) {
       throw new HttpError(
         400,
         "Quiz length cannot be less than or equal than 0"
       );
     }
     try {
-      for (let i = 0; i < options.length; i++) {
+      for (let i = 0; i < options.quizLength; i++) {
         // generate random question type
-        const questionType = Math.random() > 0.3 ? "mcq" : "matching"; // 70% will be mcq, 30% will be matching
+        let questionType: "mcq" | "matching" = "mcq";
+        if (options.type === "hybrid") {
+          questionType = Math.random() > 0.3 ? "mcq" : "matching"; // 50% will be mcq, 50% will be matching
+        } else {
+          questionType = "mcq";
+        }
 
         const question = await QuizGenerator.generateQuestion(
           topic,

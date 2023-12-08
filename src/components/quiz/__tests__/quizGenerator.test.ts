@@ -8,7 +8,7 @@ const testUser = {
 
 describe("Quiz Generation Tests", () => {
   it("Generates a quiz with 3 questions", async () => {
-    const quiz = await QuizGenerator.create("123", "1", { length: 3 });
+    const quiz = await QuizGenerator.create("123", "1", { quizLength: 3 });
 
     expect(quiz.questions.length).toBe(3);
     expect(quiz.userId).toBe(testUser.uid);
@@ -17,13 +17,13 @@ describe("Quiz Generation Tests", () => {
 
   it("throws a HTTP error when generating a quiz with 0 question", () => {
     expect(async () => {
-      await QuizGenerator.create("123", "1", { length: 0 });
+      await QuizGenerator.create("123", "1", { quizLength: 0 });
     }).rejects.toThrow("Quiz length cannot be less than or equal than 0");
   });
 
   it("throws a HTTP error when generating a quiz with negative length quiz length", () => {
     expect(async () => {
-      await QuizGenerator.create("123", "1", { length: -1 });
+      await QuizGenerator.create("123", "1", { quizLength: -1 });
     }).rejects.toThrow("Quiz length cannot be less than or equal than 0");
   });
 

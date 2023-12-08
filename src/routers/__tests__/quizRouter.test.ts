@@ -14,11 +14,14 @@ beforeAll(async () => {
   await auth.createUser(testUser);
 });
 
-afterAll(async () => {
-  // firebase clean up
-  await auth.deleteUser(testUser.uid);
+afterAll(() => {
+  // Close the server (synchronously if possible)
   server.close();
+
+  // Handle Firebase cleanup asynchronously
+  return auth.deleteUser(testUser.uid);
 });
+
 
 describe("Quiz Router Testing", () => {
   const quizDetailId = "testQuizData";

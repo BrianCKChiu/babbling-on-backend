@@ -16,7 +16,7 @@ const port = process.env.PORT || 8080;
 const allowedOrigins = [
   "http://localhost:3001",
   "http://localhost:8081",
-  "https://babbling-on-web-app-brianchiu.vercel.app/",
+  "https://babbling-on-web-app-brianchiu.vercel.app",
 ];
 
 const options: cors.CorsOptions = {

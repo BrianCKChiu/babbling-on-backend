@@ -8,6 +8,7 @@ import userRouter from "./routers/userRouter";
 import lessonRouter from "./routers/LessonRouter";
 import gestureRouter from "./routers/GestureRouter";
 import imageRouter from "./routers/imageRouter";
+import selfAssessmentQuestionRouter from "./routers/selfAssessmentQuestionRouter";
 import cors from "cors";
 
 const app = express();
@@ -36,6 +37,7 @@ app.use("/quiz", quizRouter);
 
 app.use("/customCourses", customCoursesRouter);
 app.use("/selfAssessment", selfAssessmentRouter);
+app.use("/saQuestion", selfAssessmentQuestionRouter);
 app.use("/user", userRouter);
 app.use("/ai", aiRouter);
 app.use("/lesson", lessonRouter);

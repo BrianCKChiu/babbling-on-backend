@@ -42,34 +42,26 @@ model Topic {
 }
 
 model Course {
-  id          String @id @default(uuid())
-  name        String
-  description String
-  topicId     String
-  topic       Topic  @relation(fields: [topicId], references: [id])
-  ownerId     String
-  owner       User   @relation("coursesMade", fields: [ownerId], references: [id])
-
-  // many to many 
+  id             String           @id @default(uuid())
+  name           String
+  description    String
+  topicId        String
+  ownerId        String
+  topic          Topic            @relation(fields: [topicId], references: [id])
+  owner          User             @relation("coursesMade", fields: [ownerId], references: [id])
   learners       User[]
   lessons        Lesson[]
   CoursesToUsers CoursesToUsers[]
 
   @@index([ownerId])
-  @@index([topicId])
 }
 
-// many courses to many users 
 model CoursesToUsers {
-  // id              Int      @id @default(autoincrement())  
   id       String @id @default(uuid())
-  user     User   @relation(fields: [userId], references: [id])
   userId   String
-  course   Course @relation(fields: [courseId], references: [id])
   courseId String
-
-  @@index([userId])
-  @@index([courseId])
+  user     User   @relation(fields: [userId], references: [id])
+  course   Course @relation(fields: [courseId], references: [id])
 }
 
 model Lesson {
@@ -90,17 +82,37 @@ model User {
   coursesMade     Course[]         @relation("coursesMade")
   coursesTaken    Course[]
   selfAssessments SelfAssessment[]
-
   CoursesToUsers  CoursesToUsers[]
 }
 
 model SelfAssessment {
   score        Int
   dateTaken    DateTime
-  assessmentId String   @id @default(uuid())
+  assessmentId String                   @id @default(uuid())
   userId       String
   isPractice   Boolean
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questions    SelfAssessmentQuestion[]
 
   @@index([userId])
+}
+
+model CourseToUser {
+  A String
+  B String
+
+  @@unique([A, B], map: "_CourseToUser_AB_unique")
+  @@index([B], map: "_CourseToUser_B_index")
+  @@map("_CourseToUser")
+}
+
+model SelfAssessmentQuestion {
+  id           String         @id @default(uuid())
+  text         String
+  isCorrect    Boolean
+  imageUrl     String
+  assessmentId String
+  assessment   SelfAssessment @relation(fields: [assessmentId], references: [assessmentId])
+
+  @@index([assessmentId])
 }

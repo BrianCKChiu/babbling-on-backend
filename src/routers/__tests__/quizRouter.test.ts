@@ -14,11 +14,12 @@ beforeAll(async () => {
   await auth.createUser(testUser);
 });
 
-afterAll(async () => {
-  // firebase clean up
-  await auth.deleteUser(testUser.uid);
+afterAll(() => {
   server.close();
+
+  return auth.deleteUser(testUser.uid);
 });
+
 
 describe("Quiz Router Testing", () => {
   const quizDetailId = "testQuizData";
@@ -94,6 +95,27 @@ describe("Quiz Router Testing", () => {
       expect(response.body).toStrictEqual({
         message: "Quiz length cannot be less than or equal than 0",
       });
+    });
+  });
+
+  describe("Test endpoint: '/quiz/submit'", () => {
+    const ENDPOINT = "/quiz/submitAnswer";
+    it("checks quiz results have been submitted correctly", async () => {
+      const response = await request(server).post("/quiz/create").send({
+        token: token,
+        topic: "1",
+      });
+      const quizData: Quiz = response.body;
+
+      const submitResponse = await request(server).post(ENDPOINT).send({
+        token: token,
+        quizId: quizData.id,
+        results: [],
+      });
+      const quizDoc = await db.collection("quizzes").doc(quizData.id).get();
+
+      expect(submitResponse.statusCode).toBe(200);
+      expect(quizDoc?.data().status).toEqual("completed");
     });
   });
 });

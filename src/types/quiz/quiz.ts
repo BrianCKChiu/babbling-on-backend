@@ -1,13 +1,9 @@
 import { Question, QuestionResult } from "./question";
 
 export type QuizOptions = {
-  length?: number;
-  type?: QuizType;
+  quizLength?: number;
+  type?: "hybrid" | "mcq";
 };
-export enum QuizType {
-  DAILY = "daily",
-  WEEKLY = "weekly",
-}
 export enum QuizStatus {
   INCOMPLETE = "incomplete",
   COMPLETED = "completed",

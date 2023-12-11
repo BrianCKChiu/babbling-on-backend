@@ -8,3 +8,10 @@ export type gestureMedia = {
   gestureRef: string;
   mediaRef: string;
 };
+
+export type Gesture = {
+  id: string;
+  phrase: string;
+  topicId: string;
+  media: gestureMedia[];
+};

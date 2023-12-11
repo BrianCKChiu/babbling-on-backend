@@ -12,7 +12,7 @@ const customCoursesRouter = express.Router();
  */
 
 // HOMEPAGE CUSTOM COURSES ROUTE 
-customCoursesRouter.post("/getMyCourses", async (req, res) => {
+customCoursesRouter.post("/customCoursesRoute", async (req, res) => {
   try {
     const { token } = req.body;
     console.log(req.body);
@@ -68,8 +68,8 @@ customCoursesRouter.post("/getMyCourses", async (req, res) => {
  }
 });
 
-// HOMEPAGE ADMIN COURSES ROUTE 
-customCoursesRouter.post("/getCourses", async (req, res) => {
+// HOMEPAGE EXPLORE COURSES ROUTE 
+customCoursesRouter.post("/exploreCoursesRoute", async (req, res) => {
 
   try {
     const { token } = req.body;
@@ -273,8 +273,8 @@ customCoursesRouter.post("/featured", async (req: Request, res: Response) => {
   }
 });
 
-// listens for HTTP requests and displays the course information. 
-customCoursesRouter.get("/get", async (req: Request, res: Response) => {
+// GET ALL COURSES
+customCoursesRouter.get("/getAll", async (req: Request, res: Response) => {
   try {
     const course = await prisma.course.findMany({
       include: {
@@ -292,8 +292,8 @@ customCoursesRouter.get("/get", async (req: Request, res: Response) => {
   } 
 });
 
-customCoursesRouter.get("/getCustomCourses", async (req: Request, res: Response) => {
-
+// GET ALL CUSTOM COURSES
+export async function getCustomCourses(req: Request, res: Response){
   try{
     const customCourses = await prisma.course.findMany({ 
       where: {
@@ -319,16 +319,18 @@ customCoursesRouter.get("/getCustomCourses", async (req: Request, res: Response)
   } catch (error) {
     res.status(500).send(`Internal server error: ${error}`);
   } 
-});
+}
 
-// listens for HTTP requests and sends course info to server
+customCoursesRouter.get("/getCustomCourses",getCustomCourses);
+
+// MAKES A COURSE
 customCoursesRouter.post("/post", async (req: Request, res: Response) => {
   try {
     // test
-    console.log(req.body);
+    console.log("req body log inside custom courses router: ", req.body);
 
     // const { name, description, topicId}: { name: string; description: string; topicId: String} = req.body;
-    const { name, description, topicId, token } = req.body;
+    const { name, description, topicId, token } = req.body; 
     const user = await authenticateUser(token);
 
     const result = await prisma.course.create({
@@ -336,25 +338,27 @@ customCoursesRouter.post("/post", async (req: Request, res: Response) => {
         topicId: "1",
         name: name,
         description: description,
-        ownerId: user.uid,
+        ownerId: user.uid, 
+       
       },
-    });
-    console.log(result);
+    }); 
+    console.log("Result in /post method: ",result);
     // verify the userId has a role of tutor or teacher
     // if (userId !== tutor || teacher) {
     //     res.status(400).send("Bad request"); // edit error to role authentication error
     // }
 
     // after post request test
-    res.status(201).json({ course: result });
+    // res.status(201).json({ course: result });
+    res.status(201).json(result);
   } catch (error) {
     console.log(error);
     res.status(500).send(`Internal server error: ${error}`);
   }
 });
 
-//update course
-customCoursesRouter.patch("/update/:id", async (req, res) => {
+//update course 
+export const updateCourse = async (req, res) => {
   try {
     const { name, description } = req.body;
 
@@ -374,10 +378,15 @@ customCoursesRouter.patch("/update/:id", async (req, res) => {
     console.error("Error updating course:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
-});
+};
 
-// delete a course
-customCoursesRouter.delete("/delete/", async (req, res) => {
+// TODO
+customCoursesRouter.patch("/update/:id", updateCourse);
+
+// callback function for delete a COURSE
+export const deleteCourse = async (req, res) => {
+  // Your route handling code here
+
   try {
     console.log("Delete route handler invoked");
 
@@ -406,10 +415,13 @@ customCoursesRouter.delete("/delete/", async (req, res) => {
     console.error("Error deleting course", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
-});
+};
 
-// search for a course
-customCoursesRouter.get("/search", async (req, res) => {
+// delete a course
+customCoursesRouter.delete("/delete/", deleteCourse);
+
+
+export async function searchCourses(req,res) {
   try {
     // Get search criteria from query parameters
     const { keyword } = req.query;
@@ -433,6 +445,9 @@ customCoursesRouter.get("/search", async (req, res) => {
     console.error("Error searching for courses:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
-});
+}
+
+// search for a course
+customCoursesRouter.get("/search", searchCourses);
 
 export default customCoursesRouter;

@@ -1,4 +1,4 @@
-// import { LessonListDto } from "./lessonDto";
+// import { LessonListDto } from "/types/dto/lessonDto";
 
 // export class CourseListDto {
 //   id: string;

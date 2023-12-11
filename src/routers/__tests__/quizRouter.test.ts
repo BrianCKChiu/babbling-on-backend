@@ -69,11 +69,11 @@ describe("Quiz Router Testing", () => {
   describe("Test endpoint: '/quiz/create'", () => {
     const ENDPOINT = "/quiz/create";
 
-    it("checks quiz data returned is valid", async () => {
+    it.only("checks quiz data returned is valid", async () => {
       const response = await request(server).post(ENDPOINT).send({
         token: token,
         topic: "1",
-      });
+      }); 
       expect(response.statusCode).toBe(200);
 
       const quizData: Quiz = response.body;

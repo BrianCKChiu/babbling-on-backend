@@ -3,12 +3,13 @@ import { server } from '../..';
 
 const someUserId = 'someUserId';
 const someAssessmentId = 'someAssessmentId';
+// TODO: fix the hardcoding temporary fix
 
 jest.mock('@prisma/client', () => {
     return {
       PrismaClient: jest.fn().mockImplementation(() => ({
         selfAssessment: {
-          create: jest.fn().mockResolvedValue({ id: someAssessmentId, userId: someUserId, score: 0, isPractice: true }),
+          create: jest.fn().mockResolvedValue({ id: someAssessmentId, userId: "someUserId", score: 0, isPractice: true }),
           update: jest.fn().mockResolvedValue({ id: someAssessmentId, score: 85 }),
           findMany: jest.fn().mockResolvedValue([
             {
@@ -26,8 +27,8 @@ jest.mock('@prisma/client', () => {
               dateTaken: new Date('2023-01-02'),
             },
           ]),
-          findUnique: jest.fn().mockResolvedValue({ id: someAssessmentId }),
-          delete: jest.fn().mockResolvedValue({ id: someAssessmentId }),
+          findUnique: jest.fn().mockResolvedValue({ id: "someAssessmentId" }),
+          delete: jest.fn().mockResolvedValue({ id: "someAssessmentId" }),
         },
       })),
     };
@@ -35,10 +36,11 @@ jest.mock('@prisma/client', () => {
 
 describe('SelfAssessment Router Tests', () => {
 
-  beforeAll(() => {
+  beforeEach(() => {
+    jest.resetModules();
   });
 
-  afterAll(done => {
+  afterEach(done => {
     server.close(() => {
       done();
     });

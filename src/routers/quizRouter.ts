@@ -1,5 +1,5 @@
 import { QuizGenerator } from "../components/quiz/quizGenerator";
-import { QuizOptions,QuizStatus } from "../types/quiz/quiz";
+import { Quiz, QuizOptions, QuizStatus } from "../types/quiz/quiz";
 import express from "express";
 import { db } from "../database/firebase";
 import { authenticateUser } from "../auth/authenticateUser";
@@ -66,6 +66,7 @@ quizRouter.post("/create", async (req, res) => {
 
     return res.status(200).json(quizData);
   } catch (error) {
+    console.log(error);
     if (error instanceof HttpError) {
       error.log();
       return res.status(error.statusCode).json({ message: error.message });

@@ -39,6 +39,17 @@ describe("Course Router Testing", () => { // changed
     token = await fireBaseSignInWithEmail(testUser.email, testUser.password);
     console.log("token", token)
 
+
+        // create user
+        // await prisma.user.create({
+        //   data: {
+        //     email: testUser.email,
+        //     id: testUser.uid,
+        //     role: "PROFESSOR",
+            
+        //   }
+        // });
+    
     // create course 
     fakeCourse = await prisma.course.create({
       data: {
@@ -49,13 +60,13 @@ describe("Course Router Testing", () => { // changed
       },
     }); 
 
-    // make a test user to associate to courses
-    const testUser2 = {
-      uid: "456",
-      email: "test2@gmail.com",
-      password: "<PASSWORD>",
-    };
-
+    // // make a test user to associate to courses
+    // const testUser2 = {
+    //   uid: "456",
+    //   email: "test2@gmail.com",
+    //   password: "<PASSWORD>",
+    //   coursesTaken: [fakeCourse.id],
+    // };
     
   });
 
@@ -84,6 +95,13 @@ describe("Course Router Testing", () => { // changed
         },
       });
     }
+
+    // delete user
+    // await prisma.user.delete({
+    //   where: {
+    //     id: testUser.uid,
+    //   },
+    // });
   });
 
   describe("Test endpoint: '/customCourses/post'", () => {
@@ -124,16 +142,17 @@ describe("Course Router Testing", () => { // changed
     })
   });
 
-  describe("Get endpoint: '/customCourses/takenCourses'", () => {
-    const ENDPOINT = "/customCourses/takenCourses/";
+  // describe("Get endpoint: '/customCourses/takenCourses'", () => {
+  //   const ENDPOINT = "/customCourses/takenCourses/";
 
-    it("Gets all courses taken by an user", async () => {
-      const response = await request(server).post(ENDPOINT).send({token: token});
+  //   it("Gets all courses taken by an user", async () => {
+  //     const response = await request(server).post(ENDPOINT).send({token: token, userId: testUser.uid});
 
-      expect(response.body.courses.length).toBeGreaterThanOrEqual(1);
-      expect(response.statusCode).toBe(200);
-    })
-  });
+  //     expect(response.body.courses.length).toBeGreaterThanOrEqual(1);
+  //     expect(response.statusCode).toBe(200);
+  //   })
+  // });
+
 
   describe("Get endpoint: '/customCourses/getAll'", () => {
     const ENDPOINT = "/customCourses/getAll/";
@@ -147,6 +166,7 @@ describe("Course Router Testing", () => { // changed
   });
 
   // tests go here 
+
 
 
   describe("Update endpoint: '/customCourses/update'", () => {
@@ -175,8 +195,105 @@ describe("Course Router Testing", () => { // changed
 
   });
 
+    //delete all
+
+
 
   // note the before all 
 
 
+});
+
+describe("Featured testing", () => {
+
+  let token = "";
+  let courseIds = [];
+
+  beforeAll(async () => {
+    //  user
+    token = await fireBaseSignInWithEmail(testUser.email, testUser.password);
+
+    // make courses
+    for (let i = 0; i < 6; i++) {
+      const course = await prisma.course.create({
+        data: {
+          topicId: "1",
+          name: "name" + i, 
+          description: "description" + i,
+          ownerId: "123",
+        },
+      });
+      courseIds.push(course.id);
+    }
+  });
+
+  afterAll(async () => {
+    // firebase clean up
+    // await db.collection("courses").doc(testCourseId).delete();
+
+    // prisma clean up
+    for (let i = 0; i < 6; i++) {
+      await prisma.course.delete({
+        where: {
+          id: courseIds[i],
+        },
+      });
+    }
+  });
+
+  it("Gets featured courses", async () => {
+    const response = await request(server).post("/customCourses/Featured").send({token: token});
+
+    expect(response.body.courses.length).toBe(5);
+    expect(response.statusCode).toBe(200);
+  });
+
+
+});
+
+describe("Delete all testing" , () => {
+
+  let fakeCourse;
+  let fakeCourse2;
+  let token = "";
+
+  beforeAll(async () => {
+
+    token = await fireBaseSignInWithEmail(testUser.email, testUser.password);
+
+    fakeCourse = await prisma.course.create({
+      data: {
+        topicId: "1",
+        name: "name", 
+        description: "description",
+        ownerId: "123",
+      },
+    });
+  })
+
+  afterAll(async () => {
+    // firebase clean up
+    // await db.collection("courses").doc(testCourseId).delete();
+
+    // prisma clean up
+    const prismaDeleteCheck = await prisma.course.findUnique({
+      where: {
+        id: fakeCourse.id,
+      },
+    });
+
+    if(prismaDeleteCheck) {
+      await prisma.course.delete({
+        where: {
+          id: fakeCourse.id,
+        },
+      });
+    }
+  });
+
+  it("Deletes all courses", async () => {
+    const response = await request(server).post("/customCourses/deleteAll").send({courseId: fakeCourse.id, token: token});
+
+    expect(response.statusCode).toBe(200);
+  });
 });

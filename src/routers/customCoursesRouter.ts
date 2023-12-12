@@ -120,7 +120,7 @@ customCoursesRouter.post("/exploreCoursesRoute", async (req, res) => {
  }
 });
 
-// get courses made by the user
+// get courses made by the user 
 customCoursesRouter.post("/myCourses", async (req: Request, res: Response) => {
   const { token } = req.body;
   try {
@@ -171,6 +171,7 @@ customCoursesRouter.post(
 // get an invidual course
 customCoursesRouter.post("/getCourse", async (req: Request, res: Response) => {
   const { courseId } = req.body;
+  console.log("course id: ",courseId);
 
   try {
     const course = await prisma.course.findUnique({
@@ -182,7 +183,7 @@ customCoursesRouter.post("/getCourse", async (req: Request, res: Response) => {
     if (!course) {
       res.status(404).json({ error: "Course not found" });
     } else {
-      res.json(course);
+      res.status(200).json(course);
     }
   } catch (error) {
     console.error("Error getting course:", error);
@@ -348,9 +349,7 @@ customCoursesRouter.post("/post", async (req: Request, res: Response) => {
     //     res.status(400).send("Bad request"); // edit error to role authentication error
     // }
 
-    // after post request test
-    // res.status(201).json({ course: result });
-    res.status(201).json(result);
+    res.status(201).json({ course: result });
   } catch (error) {
     console.log(error);
     res.status(500).send(`Internal server error: ${error}`);
@@ -363,7 +362,7 @@ export const updateCourse = async (req, res) => {
     const { name, description } = req.body;
 
     const updatedCourse = await prisma.course.update({
-      where: { id: req.params.id },
+      where: { id: req.params.id }, 
       data: {
         name,
         description,
@@ -373,7 +372,7 @@ export const updateCourse = async (req, res) => {
       },
     });
 
-    res.json(updatedCourse);
+    res.status(200).json(updatedCourse);
   } catch (error) {
     console.error("Error updating course:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -381,7 +380,7 @@ export const updateCourse = async (req, res) => {
 };
 
 // TODO
-customCoursesRouter.patch("/update/:id", updateCourse);
+customCoursesRouter.patch("/update/:id", updateCourse); 
 
 // callback function for delete a COURSE
 export const deleteCourse = async (req, res) => {

@@ -6,7 +6,6 @@ export async function authenticateUser(token: string): Promise<DecodedIdToken> {
   if (token == null) {
     throw new HttpError(400, "Invalid Token");
   }
-
   const user = await authenticateToken(token);
   if (user == null) {
     throw new HttpError(401, "Unauthorized");

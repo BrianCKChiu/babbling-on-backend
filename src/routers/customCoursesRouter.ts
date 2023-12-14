@@ -6,38 +6,118 @@ const customCoursesRouter = express.Router();
 
 /**
  * Get all courses created by the user
- * @param {string} token user's token
+ * @param {string} token user's token 
  * @param {string} courseId
  * @returns {Response}
  */
 
-// HOMEPAGE CUSTOM COURSES ROUTE
+// HOMEPAGE CUSTOM COURSES ROUTE 
 customCoursesRouter.post("/getMyCourses", async (req, res) => {
   try {
     const { token } = req.body;
     console.log(req.body);
-    const user = await authenticateUser(token); // USER IS AUTHENTICATED
+    const user = await authenticateUser(token);    // USER IS AUTHENTICATED and set the user to user from fb db
 
-    if (!user) {
-      // USER IS NOT AUTHENTICATED
-      return res.status(401).json({ error: "Not authenticated" });
-    }
+    // find the user in the prisma db by email because id didnt work (ask why later)
+    const userDB = await prisma.user.findUnique({
+      where : {email : user.email}
+    })
 
-    // Get all courses and filter into user's courses vs others
-    const courses = await prisma.course.findMany({
-      where: {
-        OR: [{ ownerId: user.uid }, { ownerId: { not: user.uid } }],
+  if(!userDB) { 
+    // USER IS NOT AUTHENTICATED
+   return res.status(401).json({error: "Not authenticated"});
+  }
+
+  // Get all courses and filter into user's courses vs other... custom courses
+  const courses = await prisma.course.findMany({
+    // take : 3,
+    where: {
+      OR: [
+        { owner: {role: "TUTOR"} }, 
+        { owner: {role: "PROFESSOR"} },
+        { owner: {role: "ADMIN"} },
+      ] 
+    },
+    include: { lessons: true },
+  });  
+
+  console.log("courses in backend", courses);
+  console.log("user", user);
+
+  // check if the user is a role tutor or prof
+  if(userDB.role !== "TUTOR" && userDB.role !== "PROFESSOR") {
+    // ok if this DO NOT LOAD "My Courses tab"
+
+    console.log("User and their role ", userDB, userDB.role); // wait 
+    return res.status(200).json({otherCourses: courses, "message" : "You are not authorized to create Custom Courses"}); 
+  }  
+
+  const myCourses = courses.filter(c => c.ownerId === user.uid);
+  const otherCourses = courses.filter(c => c.ownerId !== user.uid);
+
+  console.log("myCourses", myCourses);
+  console.log("otherCourses", otherCourses);
+
+  // RETURN THE USER'S COURSES AND OTHERS IN THE JSON
+  
+  // res.json({myCourses, otherCourses});
+  return res.status(200).json({myCourses, otherCourses});
+
+ } catch (error) {
+  res.status(500).json({error: "Internal server error"});
+ }
+});
+
+// HOMEPAGE ADMIN COURSES ROUTE 
+customCoursesRouter.post("/getCourses", async (req, res) => {
+
+  try {
+    const { token } = req.body;
+    console.log(req.body);
+    const user = await authenticateUser(token);    
+
+    const userDB = await prisma.user.findUnique({
+      where : {email : user.email}
+    })
+
+  if(!userDB) { 
+    // USER IS NOT AUTHENTICATED
+   return res.status(401).json({error: "Not authenticated"});
+  }
+
+  // GET ALL EXPLORE COURSES
+  const exploreCourses = await prisma.course.findMany({
+    where: {
+      OR: [
+        { owner: {role: "ADMIN"} },
+      ] 
+    },
+    take : 3,
+    include: {
+      lessons: true,
+    },
+  });  
+
+  console.log("explore Courses", exploreCourses);
+  console.log("user", user);
+
+  // GET ALL FEATURED COURSES 
+    const featuredCourses = await prisma.course.findMany({
+      take: 3,
+      include: {
+        lessons: true,
       },
     });
 
-    const myCourses = courses.filter((c) => c.ownerId === user.uid);
-    const otherCourses = courses.filter((c) => c.ownerId !== user.uid);
+  console.log("explore Courses", exploreCourses);
+  console.log("featured Courses", featuredCourses);
+  
+  // res.json({myCourses, otherCourses});
+  return res.status(200).json({exploreCourses, featuredCourses});
 
-    // RETURN THE USER'S COURSES AND OTHERS IN THE JSON
-    res.json({ myCourses, otherCourses });
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
+ } catch (error) {
+  res.status(500).json({error: "Internal server error"});
+ }
 });
 
 // get courses made by the user
@@ -193,7 +273,7 @@ customCoursesRouter.post("/featured", async (req: Request, res: Response) => {
   }
 });
 
-// listens for HTTP requests and displays the course information
+// listens for HTTP requests and displays the course information. 
 customCoursesRouter.get("/get", async (req: Request, res: Response) => {
   try {
     const course = await prisma.course.findMany({
@@ -209,7 +289,36 @@ customCoursesRouter.get("/get", async (req: Request, res: Response) => {
     }
   } catch (error) {
     res.status(500).send(`Internal server error: ${error}`);
-  }
+  } 
+});
+
+customCoursesRouter.get("/getCustomCourses", async (req: Request, res: Response) => {
+
+  try{
+    const customCourses = await prisma.course.findMany({ 
+      where: {
+        OR: [
+          {owner: { role: "TUTOR" }},
+          {owner: { role: "PROFESSOR" }},
+        ]
+      },
+      include: {
+        lessons: true,
+      },
+    }); 
+
+    console.log("customCourses before if check", customCourses);
+
+    if (!customCourses) { 
+      res.status(404).json({ error: "Course not found" }); 
+    } else {   
+      res.json(customCourses);  
+      console.log("Custom Courses in backend", customCourses);
+    }
+
+  } catch (error) {
+    res.status(500).send(`Internal server error: ${error}`);
+  } 
 });
 
 // listens for HTTP requests and sends course info to server
@@ -310,7 +419,7 @@ customCoursesRouter.get("/search", async (req, res) => {
     }
 
     // Perform a case-insensitive search for lessons based on the keyword
-    const lessons = await prisma.course.findMany({
+    const lessons = await prisma.course.findMany({ 
       where: {
         OR: [
           { name: { contains: String(keyword) } },

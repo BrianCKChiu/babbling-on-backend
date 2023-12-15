@@ -6,19 +6,19 @@ export async function authenticateUser(token: string): Promise<DecodedIdToken> {
   if (token == null) {
     throw new HttpError(400, "Invalid Token");
   }
-  const user = await authenticateToken(token);
+  const user = await authenticateToken(token); // ERROR HERE
   if (user == null) {
     throw new HttpError(401, "Unauthorized");
   }
   return user;
 }
 
-async function authenticateToken(
+async function authenticateToken( // TO HERE
   token: string
 ): Promise<DecodedIdToken | null> {
   try {
     return await admin.auth().verifyIdToken(token);
   } catch (e) {
-    throw new HttpError(500, "Internal Server Error: " + e);
+    throw new HttpError(500, "Internal Server Error: " + e); // TO HERE
   }
 }

@@ -71,6 +71,8 @@ customCoursesRouter.post("/customCoursesRoute", async (req, res) => {
 // HOMEPAGE EXPLORE COURSES ROUTE 
 customCoursesRouter.post("/exploreCoursesRoute", async (req, res) => {
 
+  console.log("exploreCoursesRoute");
+
   try {
     const { token } = req.body;
     console.log(req.body);
@@ -79,6 +81,7 @@ customCoursesRouter.post("/exploreCoursesRoute", async (req, res) => {
     const userDB = await prisma.user.findUnique({
       where : {email : user.email}
     })
+    console.log("after userDB: ", userDB);
 
   if(!userDB) { 
     // USER IS NOT AUTHENTICATED
@@ -116,6 +119,7 @@ customCoursesRouter.post("/exploreCoursesRoute", async (req, res) => {
   return res.status(200).json({exploreCourses, featuredCourses});
 
  } catch (error) {
+  console.log("error", error);
   res.status(500).json({error: "Internal server error"});
  }
 });

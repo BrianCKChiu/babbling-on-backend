@@ -204,8 +204,8 @@ async function main() {
         create: [
           {
             id: "10",
-            mediaType: "IMAGE",
-            mediaRef: "images/J_test.jpg",
+            mediaType: "IMAGE", // images is the directory and the other thig is the image name 
+            mediaRef: "images/J_test.jpg", // when creating a gesture with an image it will be saved to firebase and then i gotta save the path to prisma 
             updatedAt: new Date(),
           },
         ],

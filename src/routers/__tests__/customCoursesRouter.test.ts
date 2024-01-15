@@ -194,14 +194,6 @@ describe("Course Router Testing", () => { // changed
     });
 
   });
-
-    //delete all
-
-
-
-  // note the before all 
-
-
 });
 
 describe("Featured testing", () => {

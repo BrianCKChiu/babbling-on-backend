@@ -60,7 +60,7 @@ beforeAll(async () => {
         });
       });
 
-      describe("GET /lessons", () => {
+      describe("Get endpoint: 'LessonRouter/lessons'", () => {
         it("should return a list of lessons", async () => {
           const res = await request(server)
            .get("/lessons")
@@ -72,17 +72,57 @@ beforeAll(async () => {
       });
 
       // add a lesson 
-      describe("Test endpoing: 'LessonRouter/post'", () => {
+      describe("Post endpoing: 'LessonRouter/post'", () => {
         const ENDPOINT = "/LessonRouter/post";
 
         it("Creates a lesson", async () => {
           const response = await request(server).post(ENDPOINT).send({...testLessonData, token: token});
         
-          console.log("Response Text: ", response.text);
+          console.log("Response Text for Post method in Lesson Router Test: ", response.text);
           lessonId = response.body.lesson.id;
           expect(response.body.lesson.name).toStrictEqual(testLessonData.name);
           // expect(response.body.data.description).toStrictEqual(testCourseData.description);
           expect(response.statusCode).toBe(201);
+        });
+      });
+
+      // get a lesson
+      describe("Get endpoint: '/LessonRouter/getLesson'", () => {
+        const ENDPOINT = "/LessonRouter/getLesson/";
+
+        it("Gets a lesson", async () => {
+          const response = await request(server).post(ENDPOINT).send({
+            lessonId: fakeLesson.id // note to self: maybe adjust the naming later
+          });
+
+          expect(response.body.name).toStrictEqual("name");
+          expect(response.statusCode).toBe(200);
+        });
+      });
+
+      // update a lesson
+      describe("Update endpoint: 'LessonRouter/update'", () => {
+        const ENDPOINT = "/LessonRouter/update";
+
+        it("Updates a lesson", async () => {
+          const response = await request(server).patch(ENDPOINT + fakeLesson.id).send({name: "new name", description: "new description"});
+
+          console.log("Response Text for Update Endpoint in Lesson Router Test: ", response.text);
+          lessonId = response.body.lesson.id;
+          expect(response.body.lesson.name).toStrictEqual("new name");
+          expect(response.body.data.description).toStrictEqual("new description");
+          expect(response.statusCode).toBe(200);
+        });
+      });
+
+      // delete a lesson
+      describe("Delete endpoint: 'LessonRouter/delete'", () => {
+        const ENDPOINT = "/LessonRouter/delete";
+
+        it("Deletes a lesson", async () => {
+          const response = await request(server).delete(ENDPOINT).send({lessonId: fakeLesson.id});
+
+          expect(response.statusCode).toBe(200);
         });
       });
       

@@ -104,7 +104,7 @@ describe("Course Router Testing", () => { // changed
     // });
   });
 
-  describe("Test endpoint: '/customCourses/post'", () => {
+  describe("Post endpoint: '/customCourses/post'", () => {
     const ENDPOINT = "/customCourses/post";
 
     it("Creates a course", async () => {

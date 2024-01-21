@@ -33,7 +33,7 @@ beforeAll(async () => {
       let lessonId = "";
       let fakeLesson;
 
-      beforeAll(async () => {
+      beforeAll(async () => { 
 
         token = await fireBaseSignInWithEmail(testUser.email, testUser.password);
         console.log("token", token)
@@ -70,5 +70,21 @@ beforeAll(async () => {
           expect(res.body).toHaveLength(1);
         });
       });
+
+      // add a lesson 
+      describe("Test endpoing: 'LessonRouter/post'", () => {
+        const ENDPOINT = "/LessonRouter/post";
+
+        it("Creates a lesson", async () => {
+          const response = await request(server).post(ENDPOINT).send({...testLessonData, token: token});
+        
+          console.log("Response Text: ", response.text);
+          lessonId = response.body.lesson.id;
+          expect(response.body.lesson.name).toStrictEqual(testLessonData.name);
+          // expect(response.body.data.description).toStrictEqual(testCourseData.description);
+          expect(response.statusCode).toBe(201);
+        });
+      });
+      
     }
   );

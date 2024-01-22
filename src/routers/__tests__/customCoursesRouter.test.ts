@@ -163,10 +163,7 @@ describe("Course Router Testing", () => { // changed
       expect(response.body.length).toBeGreaterThanOrEqual(1);
       expect(response.statusCode).toBe(200);
     });
-  });
-
-  // tests go here 
-
+  }); 
 
 
   describe("Update endpoint: '/customCourses/update'", () => {

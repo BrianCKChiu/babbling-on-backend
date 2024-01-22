@@ -1,7 +1,7 @@
 import express from "express";
-import prisma from "../database/prisma";
+import prisma from "../database/prisma"; // cant even own up that he indirectly called me crazy 
 
-const lessonRouter = express.Router();
+const lessonRouter = express.Router(); 
 
 // create a lesson
 lessonRouter.post("/post", async (req, res) => {

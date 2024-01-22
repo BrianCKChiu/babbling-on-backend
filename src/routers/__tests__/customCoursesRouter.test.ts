@@ -142,16 +142,17 @@ describe("Course Router Testing", () => { // changed
     })
   });
 
-  // describe("Get endpoint: '/customCourses/takenCourses'", () => {
-  //   const ENDPOINT = "/customCourses/takenCourses/";
+  // WIP
+  describe("Get endpoint: '/customCourses/takenCourses'", () => {
+    const ENDPOINT = "/customCourses/takenCourses/";
 
-  //   it("Gets all courses taken by an user", async () => {
-  //     const response = await request(server).post(ENDPOINT).send({token: token, userId: testUser.uid});
+    it("Gets all courses taken by an user", async () => {
+      const response = await request(server).post(ENDPOINT).send({token: token, userId: testUser.uid});
 
-  //     expect(response.body.courses.length).toBeGreaterThanOrEqual(1);
-  //     expect(response.statusCode).toBe(200);
-  //   })
-  // });
+      expect(response.body.courses.length).toBeGreaterThanOrEqual(1);
+      expect(response.statusCode).toBe(200);
+    })
+  });
 
 
   describe("Get endpoint: '/customCourses/getAll'", () => {

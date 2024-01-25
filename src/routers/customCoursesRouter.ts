@@ -336,7 +336,7 @@ customCoursesRouter.post("/post", async (req: Request, res: Response) => {
 
     // const { name, description, topicId}: { name: string; description: string; topicId: String} = req.body;
     const { name, description, topicId, token } = req.body; 
-    const user = await authenticateUser(token);
+    const user = await authenticateUser(token); // start here
 
     const result = await prisma.course.create({
       data: {

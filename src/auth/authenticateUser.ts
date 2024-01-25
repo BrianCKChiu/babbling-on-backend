@@ -6,6 +6,7 @@ export async function authenticateUser(token: string): Promise<DecodedIdToken> {
   if (token == null) {
     throw new HttpError(400, "Invalid Token");
   }
+  // then here
   const user = await authenticateToken(token); // ERROR HERE
   if (user == null) {
     throw new HttpError(401, "Unauthorized");
@@ -19,6 +20,7 @@ async function authenticateToken( // TO HERE
   try {
     return await admin.auth().verifyIdToken(token);
   } catch (e) {
+    // end here
     throw new HttpError(500, "Internal Server Error: " + e); // TO HERE
   }
 }

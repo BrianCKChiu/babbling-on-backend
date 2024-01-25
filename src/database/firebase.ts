@@ -11,7 +11,7 @@ const buffServiceAcc = Buffer.from(
   "base64"
 );
 
-const serviceAccount = JSON.parse(buffServiceAcc.toString("ascii"));
+const serviceAccount = require("./firebase-private-key.json");
 
 const useEmulator = true;
 
@@ -25,6 +25,7 @@ const useEmulator = true;
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://Babbling-On-2023.firebaseio.com",
 });
 
 export const auth = admin.auth();

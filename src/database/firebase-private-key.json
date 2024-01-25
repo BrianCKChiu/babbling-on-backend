@@ -1,0 +1,16 @@
+{
+    "type": "service_account",
+    "project_id": "babbling-on-2023",
+    "private_key_id": "bb439989f2d6651a99a41f54a590f992377fd86a",
+    "private_key": 
+  
+  "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDTYaLGD/buV0w9\n0Oqlrs6RZyr+WmZ7UYocGkf7combzYzj78Uo9AP0Khv08fZiEBdboEDls/Ah1SN0\nAIgMqhwKkstkn/x2jw16wHoGnmbmnoeUBsS/yucCKneszvEV4yQzm2fdUyUpLBFh\nhQPc87gcNLEOo9lnScEYlt12vmpNB/czD3cMrcy0Uerlj8YqoDnQRRI/Xo0fgRC4\nT649/KsTlvkEFP//V6c0RPlc4CXov1k3R7M4GoTcQJqsQf95OyPkxx+on0TtPavM\nJxokik9AbTh2l0sMNYH1cApiHvJ+sFDVWwFz6DLbGh+i/9M/+8GR/LlA2tv8bXSM\n9zZYAFr5AgMBAAECggEAAmxxE2sdRkQkeOSjaBpovmnhKDuXnLba30cdh6sbcPif\n8qtuBodDtgHh7QKgM/rMwG1w3mFcMbscoLNyho37Fn5H4Y5kXzn1KjDjmp39fovs\nmzHNAYjynJz+3xxGpIevQ33hkzv6kK4IwKY9Mi7uL7lFRW5zVe1BJEZzNsMTUMZE\nWsaFZ86FvasnrQzT5MpljhiwbcdifFnZyq8vlpKJGuOmbFKzNQpNZaOYHUZVG0tp\nonAsfBC/kGyOQg/Asr7GVN4anhc4yVnAZrFmmnGkxzd5muEQ1d7P4y1BymBRYW6M\nOYeyVj8FKLoUex6Qmr0OpbmVbszrkjTLiIxNOC11oQKBgQDsim2eVlnodX7y2yqS\n8HSPSIdPmJrWy/UOn33wNv9a1FU5VqPavRMke9uMnEWvXpMiJMk6lmCIeFrNnCNs\nJ3So+sLmXSCiFYU8RrppUHOFz9AsOhCuHAtt3MNyrJGE2ZeJL0TRTo7O3dIspdRp\nYvfkRDftzqw3YFE4mKlXwC0CiQKBgQDkxVlqq9j/+ZYCj31+Txv2OPVtF6cz7qUV\n35dOa5B83+sxOLa4nEqqFwqZK/7dcQpP78fUvDiQlp6et7TuDqPnAZpUxIXN1H/S\n4Sp++GbjCglOUrne2uC2x5G3t49FeNTfW2OKpZxeT+4xGM5/0dSwffuXjwVDucR7\nUbzfI7s48QKBgGnhrR/rV2OO9LyRDoWnzQU2WhtvHCB6O7/H9P/KHpPx6BQ6jC4l\n5KO4LZbLfQX7N7FY9hqbpapw9XSEJ/cJ0laxqPylQy5Ko9FPd7IcqRmE5JJni3/k\nXdlXsMVsKddl70chOZTXrWU8NhB2SpbCDmTHhKGWmdBP9Qt4ipUVGRDBAoGBAJQf\nF0sS41ixgCg+QdHDZOZicL3mv7LHRIpKD8yNpqrDzKM9Bkm3oDxK2Ojd7JHyO+wP\n44HhMHqlmyRG69XrEsJibkuORthDS1P9yCcXrH46JFZbB8+8RhzyUG30YsZneuT3\nZhcCLaF+/Uk6t5FZCe4QVBMIXi9Am3ABN1n+55zxAoGAbir37XOj0HnQrN5u2m5r\nshjcg0L0oAN89olmyeqrOrPvU9ZH9ISKLJGGMsVr9hn/cp0gQn1khdQO/TsEUkUw\npXUlaiLdDYBVZFdVf0Mmf0m7OBNjvpRURNzYzSP8ak6/kSfdddSWRTvMeOkNscyc\netCKUDVS+GEYy/A2PygaQ/A=\n-----END PRIVATE KEY-----\n",
+  
+    "client_email": "firebase-adminsdk-kbfvc@babbling-on-2023.iam.gserviceaccount.com",
+    "client_id": "115528187269515120217",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-kbfvc%40babbling-on-2023.iam.gserviceaccount.com",
+    "universe_domain": "googleapis.com"
+  }

@@ -13,7 +13,8 @@ userRouter.post("/signUp", async (req, res) => {
       token,
     }: { email: string; uid: string; role: string; token: string } = req.body;
 
-    await authenticateUser(token);
+    console.log(token);
+    // await authenticateUser(token);
 
     await prisma.user.create({
       data: {

@@ -11,12 +11,18 @@ const customCoursesRouter = express.Router();
  * @returns {Response}
  */
 
+// when a user clicks on a lesson we send a request that the user started the first sign of a lesson 
+// every time the user navigates to a page again but they wene to the 5th sign they should start at the sign they were last at
+// and the counter for latest sign is updated with the highest progress and if not then start with the first sign 
+
+// save the sign the user clicked to, to the user object and then compare with what you had before 
+
 // HOMEPAGE CUSTOM COURSES ROUTE 
 customCoursesRouter.post("/customCoursesRoute", async (req, res) => {
   try {
     const { token } = req.body;
     console.log(req.body);
-    const user = await authenticateUser(token);    // USER IS AUTHENTICATED and set the user to user from fb db
+    const user = await authenticateUser(token);    // USER IS AUTHENTICATED and set the user to user from firebase db
 
     // find the user in the prisma db by email because id didnt work (ask why later)
     const userDB = await prisma.user.findUnique({

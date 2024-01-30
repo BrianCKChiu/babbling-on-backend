@@ -116,7 +116,6 @@ model StartedGesture {
   courseId         String
   lessonId         String
   gestureId        String
-  maxReachedGesture Int
   startedLessonId  String
   lesson           StartedLesson          @relation(fields: [lessonId], references: [id])
 

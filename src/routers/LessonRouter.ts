@@ -1,8 +1,31 @@
 import express from "express";
 import prisma from "../database/prisma"; // cant even own up that he indirectly called me crazy 
+import { authenticateUser } from "../auth/authenticateUser";
 
 const lessonRouter = express.Router(); 
 
+// started a lesson 
+lessonRouter.post("/startLesson", async (req, res) => {
+  try {
+    // authentication
+    const { token } = req.body;
+    console.log(token);
+    const user = await authenticateUser(token);
+
+    if (user == null) {
+      return res.status(401).json({ error: "Not Authenticated" });
+    }
+
+    // start a course,
+    // receive course id, lesson id and current index of the lesson and gesture id
+    // search started course list to find the one that has the same course and user id
+
+    res.status(200);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 // create a lesson
 lessonRouter.post("/post", async (req, res) => {
   try {

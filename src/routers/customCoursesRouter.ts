@@ -149,7 +149,7 @@ customCoursesRouter.post("/myCourses", async (req: Request, res: Response) => {
   }
 });
 
-// get courses taken by the user
+// get courses taken by the user - what does taken mean?
 customCoursesRouter.post(
   "/takenCourses",
   async (req: Request, res: Response) => {

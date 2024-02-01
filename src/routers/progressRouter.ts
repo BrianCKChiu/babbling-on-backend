@@ -113,8 +113,8 @@ progressRouter.post("/startedALesson", async (req, res) => {
                 const lessonResult = await prisma.startedLesson.create({
                     data: {
                         courseId,
-                        lessonId,
-                        userId: user.id,
+                        lessonId, // find with this
+                        userId: user.id, // find with this as well if you gotta use it
                         maxReachedGesture: 0,
                         startedCourseId: course.id,
                     },
@@ -124,6 +124,7 @@ progressRouter.post("/startedALesson", async (req, res) => {
                     },
                 });
 
+                // EDIT
                 // add the lesson to the startedLessons list
                 course.startedLessons.push(lesson);
 
@@ -146,75 +147,93 @@ progressRouter.post("/startedALesson", async (req, res) => {
                 });
 
                 // add the new gesture to the list of started gestures
-                lessonResult.startedGestures.push(gestureResult);
+                // lessonResult.startedGestures.push(gestureResult);
+                console.log("lesson Result's startedGestures list", lessonResult.startedGestures);
 
                 return res.status(200).json("started a lesson and a gesture");
             } else {
             // lesson DOES exist
             // ie. user has started this course and this lesson so now move onto gesture 
-
-            // check if the gesture exists
-            const gesture = await prisma.startedGesture.findFirst({
-                where : {
-                    AND: [
-                        {gestureId: gestureId as string}, // makes sure its the gesture we're seeing
-                        {userId: user.id}, // makes sure this is the use that is logged in
-                        ]
+            
+            const realLesson = await prisma.lesson.findFirst({
+                where: {
+                    id: lesson.lessonId
+                    },
+                    include: {
+                        gestures: true,
                     }
                 });
+
+            // gesture you will return will be
+            return res.status(200).json({gesture: realLesson.gestures[lesson.maxReachedGesture]});
+
+            // check if the gesture exists
+            // const gesture = await prisma.startedGesture.findFirst({
+            //     where : {
+            //         AND: [
+            //             {gestureId: gestureId as string}, // makes sure its the gesture we're seeing
+            //             {userId: user.id}, // makes sure this is the use that is logged in
+            //             ]
+            //         }
+            //     });
 
             // GESTURE DOESN'T EXIST
             // ie. the user has started this course and this lesson but not this gesture
             // so make a gesture and add it to the existing lesson's startedGesture list
 
-            if (!gesture){
-                const gestureResult = await prisma.startedGesture.create({
-                    data: {
-                        gestureId,
-                        lessonId,
-                        userId: user.id,
-                        courseId,
-                        startedLessonId: lesson.id,
-                    },
-                    include: {
-                        lesson: true,
-                    },
-                });
+        //     if (!gesture){
+        //         const gestureResult = await prisma.startedGesture.create({
+        //             data: {
+        //                 gestureId,
+        //                 lessonId,
+        //                 userId: user.id,
+        //                 courseId,
+        //                 startedLessonId: lesson.id,
+        //             },
+        //             include: {
+        //                 lesson: true,
+        //             },
+        //         });
 
-                // add the gesture to the startedGestures list
-                lesson.startedGestures.push(gestureResult);
+        //         // add the gesture to the startedGestures list
+        //         lesson.startedGestures.push(gestureResult);
 
-                return res.status(200).json("started a new gesture");
-            } else {
-            // GESTURE DOES EXIST 
-            // ie. user has started this course, this lesson and this gesture so now move onto next lesson or finish course
-            
-            // find the real lesson 
-            lesson.lessonId 
-            const realLesson = await prisma.lesson.findUnique({
-                where: {
-                    id: lesson.lessonId,
-                },
-                include: {
-                    gestures: true,
-                },
-            });
+        //         return res.status(200).json("started a new gesture");
+        //     } else {
 
-            // YI AYUDA
-            if (realLesson.gestures.length > lesson.startedGestures.length){
-                // go to next gesture there's still more gestures
-            } else {
-                // finish lesson 
+        //     // YI AYUDA SHOULD I KEEP THIS HERE OR SHOULD I MOVE IT TO STARTED GESTURES
 
-            }
-            }
-            }
+        //     // GESTURE DOES EXIST 
+        //     // ie. user has started this course, this lesson and this gesture so now move onto next gesture or finish course
+
+        //     // find the real lesson 
+        //     lesson.lessonId 
+        //     const realLesson = await prisma.lesson.findUnique({
+        //         where: {
+        //             id: lesson.lessonId,
+        //         },
+        //         include: {
+        //             gestures: true,
+        //         },
+        //     });
+
+        //     // YI AYUDA
+
+        //     // check if the lesson is finished
+        //     if (realLesson.gestures.length > lesson.startedGestures.length){
+        //         // go to next gesture there's still more gestures
+        //     } else {
+        //         // finish lesson 
+
+        //     }
+        // }
         }
+    }
             // return res.status(404).json({ error: "Lesson does not exist" });
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: "Internal Server Error" });
-        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
    
 });
 
